@@ -1,0 +1,284 @@
+/* =========================================
+   1. VARIABLES Y RESET
+   ========================================= */
+:root {
+    --primary-color: #2c3e50;    /* Azul oscuro profesional */
+    --secondary-color: #34495e;  /* Azul grisáceo */
+    --accent-color: #3498db;     /* Azul brillante para botones */
+    --success-color: #27ae60;    /* Verde éxito */
+    --danger-color: #e74c3c;     /* Rojo error */
+    --bg-color: #f4f7f6;         /* Gris muy claro para el fondo */
+    --text-color: #333;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* =========================================
+   2. NAVBAR (FIJO ARRIBA)
+   ========================================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0 30px;
+    height: 65px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-main {
+    display: flex;
+    align-items: center;
+}
+
+.menu-list {
+    display: flex;
+    list-style: none;
+}
+
+.menu-list > li {
+    position: relative;
+}
+
+.menu-list a {
+    color: var(--white);
+    text-decoration: none;
+    padding: 21px 20px;
+    display: block;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+}
+
+.menu-list a:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Dropdowns del Menú */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--white);
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    list-style: none;
+    border-radius: 0 0 4px 4px;
+}
+
+.dropdown-content li a {
+    color: var(--text-color) !important;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-content li a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Dropdown de Usuario (Derecha) */
+.user-dropdown {
+    position: relative;
+    cursor: pointer;
+    text-align: right;
+    padding: 5px 10px;
+}
+
+.user-trigger strong {
+    display: block;
+    font-size: 0.9rem;
+}
+
+.user-trigger small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.user-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: var(--white);
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    list-style: none;
+    border-radius: 4px;
+}
+
+.user-menu li a {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.user-menu li a:hover {
+    background-color: #f1f1f1;
+}
+
+.user-dropdown:hover .user-menu {
+    display: block;
+}
+
+.logout-link {
+    color: var(--danger-color) !important;
+    font-weight: bold;
+}
+
+/* =========================================
+   3. CONTENEDOR PRINCIPAL (MAIN)
+   ========================================= */
+#main-content {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    transition: opacity 0.3s ease; /* Para el efecto Fetch */
+}
+
+.contenedor {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+   4. FORMULARIOS Y TABLAS
+   ========================================= */
+h1, h2 {
+    margin-bottom: 25px;
+    color: var(--primary-color);
+}
+
+fieldset {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+    color: var(--secondary-color);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button, .btn-back {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+button[type="submit"] {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+.btn-back {
+    background-color: #95a5a6;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+.btn-success{
+	background-color: #136DC1;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+.btn-danger {
+	background-color: #EA4C4E;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+.btn-change {
+	background-color: #41DD5E;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+/* Tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+table th {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* =========================================
+   5. UTILERÍAS (DASHBOARD CARDS)
+   ========================================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
