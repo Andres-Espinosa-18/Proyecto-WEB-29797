@@ -35,6 +35,10 @@ function cargarVista(pagina) {
                 <p>No se pudo cargar la vista <b>${pagina}</b>.</p>
             </div>`;
         });
+	
+	if(window.activarMenu) {
+        window.activarMenu(url);
+    }
 }
 
 
@@ -89,6 +93,7 @@ function eliminarFila(id, tipo) {
             method: 'POST',
             body: formData
         })
+		
         .then(res => res.text())
         .then(data => {
             alert(data);
@@ -97,3 +102,26 @@ function eliminarFila(id, tipo) {
         });
     }
 }
+
+
+function ActivarFila(id, tipo) {
+    if(confirm(`¿Estás seguro de activar este ${tipo}?`)) {
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('tipo', tipo);
+
+        fetch('server/activar_general.php', {
+            method: 'POST',
+            body: formData
+        })
+		
+        .then(res => res.text())
+        .then(data => {
+            alert(data);
+            // Recargamos la vista actual para ver los cambios
+            cargarVista(tipo === 'usuario' ? 'usuarios.php' : 'crear_rol.php');
+        });
+    }
+}
+
+

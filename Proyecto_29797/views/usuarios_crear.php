@@ -12,9 +12,23 @@ require_once '../server/db.php';
         
         <label>Contraseña:</label>
         <input type="password" name="password" style="width:100%; padding:8px; margin-bottom:15px;" required>
+		
+		 <label>Fecha de Nacimiento:</label>
+        <input type="date" name="fecha" style="width:100%; padding:8px; margin-bottom:15px;">
+		
+		 <label>Cedula:</label>
+        <input type="text" name="cedula" style="width:100%; padding:8px; margin-bottom:15px;">
+		
+		 <label>Email</label>
+        <input type="email" name="email" style="width:100%; padding:8px; margin-bottom:15px;">
+		
+		 <label>Direccion</label>
+        <input type="text" name="direccion" style="width:100%; padding:8px; margin-bottom:15px;">
+		
+		
 
         <label>Asignar Rol:</label>
-        <select name="id_rol" style="width:100%; padding:8px; margin-bottom:15px;" required>
+        <select name="id_rol" style="width:100%; padding:8px; margin-bottom:15px;" >
             <option value="">-- Seleccione un Rol --</option>
             <?php
             $roles = $conn->query("SELECT id_rol, nombre_rol FROM roles");
@@ -36,11 +50,6 @@ window.guardarNuevoUsuario = function() {
     const form = document.getElementById('form-crear-usuario');
     const datos = new FormData(form);
     
-    // Validación básica
-    if(datos.get('id_rol') === "") {
-        alert("Por favor, selecciona un rol para el usuario.");
-        return;
-    }
 
     fetch('server/usuarios_guardar.php', {
         method: 'POST',

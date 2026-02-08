@@ -15,12 +15,29 @@ function tienePermisoRol($conn, $user_id, $id_menu) {
 ?>
 
 <div class="contenedor">
-        <h2>GestiÃ³n de Roles</h2>
-        <?php if(tienePermisoRol($conn, $user_id, 13)): ?>
-            <button onclick="cargarVista('roles_crear.php')" class="btn-success">+ Nuevo Rol</button>
-        <?php endif; ?>
+    <h2>GestiÃ³n de Roles</h2>
+    
+	       <div>
+            <?php if(tienePermisoRol($conn, $user_id, 13)): ?>
+                <button onclick="cargarVista('roles_crear.php')" class="btn-success">+ Nuevo Rol</button>
+            <?php endif; ?>
+        </div>
+    <div class="tabla-controles">
+ 
 
-    <table class="tabla-gestion">
+        <div>
+            <label>Mostrar: </label>
+            <select id="selectorCantidadRoles" onchange="cambiarCantidadRoles()">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="-1">Todos</option>
+            </select>
+            <span id="infoRegistrosRoles" style="font-size: 0.9em; margin-left: 10px; color: #666;"></span>
+        </div>
+    </div>
+
+    <table class="tabla-gestion" id="tablaRoles">
         <thead>
             <tr>
                 <th>ID</th>
@@ -44,11 +61,93 @@ function tienePermisoRol($conn, $user_id, $id_menu) {
                     <?php endif; ?>
 
                     <?php if(tienePermisoRol($conn, $user_id, 15)): ?>
-                        <button title="Eliminar" class="btn-danger" onclick="eliminarFila(<?php echo $r['id_rol']; ?>, 'rol')">ğŸ—‘ï¸ Eliminar</button>
+                        <?php if ($r['id_rol'] !=1 && $r['id_rol'] !=0):  ?>
+                            <button title="Eliminar" class="btn-danger" onclick="eliminarFila(<?php echo $r['id_rol']; ?>, 'rol')">ğŸ—‘ï¸ Eliminar</button>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </td>
             </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
+
+    <div id="paginacionRoles" class="paginacion-container"></div>
 </div>
+
+<script>
+    // Variables específicas para Roles (para no chocar con Usuarios)
+    let paginaActualRoles = 1;
+    let filasPorPaginaRoles = 10; 
+
+    // Inicializar al cargar
+    // Nota: Como es SPA, a veces es mejor llamar la función directamente si el script se carga dinámicamente
+    setTimeout(actualizarPaginacionRoles, 100); 
+
+    function cambiarCantidadRoles() {
+        const selector = document.getElementById('selectorCantidadRoles');
+        filasPorPaginaRoles = parseInt(selector.value);
+        paginaActualRoles = 1; 
+        actualizarPaginacionRoles();
+    }
+
+    function actualizarPaginacionRoles() {
+        const tabla = document.getElementById('tablaRoles');
+        if(!tabla) return; // Seguridad por si la tabla aun no existe
+
+        const cuerpo = tabla.querySelector('tbody');
+        const filas = Array.from(cuerpo.querySelectorAll('tr'));
+        const contenedorBotones = document.getElementById('paginacionRoles');
+        const info = document.getElementById('infoRegistrosRoles');
+        const totalFilas = filas.length;
+
+        let limite = (filasPorPaginaRoles === -1) ? totalFilas : filasPorPaginaRoles;
+        let totalPaginas = Math.ceil(totalFilas / limite);
+
+        // 1. Mostrar/Ocultar filas
+        filas.forEach((fila, index) => {
+            fila.style.display = 'none';
+            let inicio = (paginaActualRoles - 1) * limite;
+            let fin = inicio + limite;
+            if (index >= inicio && index < fin) {
+                fila.style.display = '';
+            }
+        });
+
+        // 2. Generar Botones
+        contenedorBotones.innerHTML = '';
+        
+        // Botón Anterior
+        if (totalPaginas > 1) {
+            let btnPrev = document.createElement('button');
+            btnPrev.innerText = '<<';
+            btnPrev.className = 'paginacion-btn';
+            btnPrev.onclick = () => { if(paginaActualRoles > 1) { paginaActualRoles--; actualizarPaginacionRoles(); }};
+            if(paginaActualRoles === 1) btnPrev.disabled = true;
+            contenedorBotones.appendChild(btnPrev);
+        }
+
+        // Números
+        for (let i = 1; i <= totalPaginas; i++) {
+            let btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className = 'paginacion-btn ' + (i === paginaActualRoles ? 'active' : '');
+            btn.onclick = () => {
+                paginaActualRoles = i;
+                actualizarPaginacionRoles();
+            };
+            contenedorBotones.appendChild(btn);
+        }
+
+        // Botón Siguiente
+        if (totalPaginas > 1) {
+            let btnNext = document.createElement('button');
+            btnNext.innerText = '>>';
+            btnNext.className = 'paginacion-btn';
+            btnNext.onclick = () => { if(paginaActualRoles < totalPaginas) { paginaActualRoles++; actualizarPaginacionRoles(); }};
+            if(paginaActualRoles === totalPaginas) btnNext.disabled = true;
+            contenedorBotones.appendChild(btnNext);
+        }
+
+   
+    }
+</script>

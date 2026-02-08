@@ -52,3 +52,44 @@ if ($res) {
         </ul>
     </div>
 </nav>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Obtener todos los enlaces del menú
+    const links = document.querySelectorAll('.nav-link');
+
+    // 2. Función para activar un menú específico
+    window.activarMenu = function(vista) {
+        // Quitamos la clase 'active' de TODOS los links
+        links.forEach(link => link.classList.remove('active'));
+
+        // Buscamos el link que tenga el data-view igual a la vista cargada
+        // Si la vista tiene parámetros (ej: usuarios.php?id=1), limpiamos para buscar solo usuarios.php
+        const vistaLimpia = vista.split('?')[0]; 
+        
+        const linkActivo = document.querySelector(`.nav-link[data-view="${vistaLimpia}"]`);
+        
+        // Si encontramos el link, lo marcamos
+        if (linkActivo) {
+            linkActivo.classList.add('active');
+        }
+    };
+
+    // 3. Evento Click para los menús
+    links.forEach(link => {
+        link.addEventListener('click', function() {
+            // Al hacer clic, marcamos este botón como activo visualmente
+            links.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Aquí deberías llamar a tu función de cargar vista si no lo hace el html
+            // cargarVista(this.getAttribute('data-view')); 
+        });
+    });
+
+    // 4. Marcar "Inicio" por defecto al cargar la página por primera vez
+    activarMenu('principal.php');
+});
+</script>

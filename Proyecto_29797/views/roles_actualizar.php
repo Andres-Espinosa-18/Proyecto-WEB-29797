@@ -1,5 +1,10 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../server/db.php';
+$id_usuario = $_SESSION['id_usuario']; // Esto viene del login
+
 $id = intval($_GET['id'] ?? 0);
 $res = $conn->query("SELECT * FROM roles WHERE id_rol = $id");
 $r = $res->fetch_assoc();
@@ -9,8 +14,10 @@ $r = $res->fetch_assoc();
     <form id="form-edit-rol">
         <input type="hidden" name="id_rol" value="<?php echo $id; ?>">
         
+		<?php  if( $id_usuario==1): ?>
         <label>Nombre del Rol:</label>
         <input type="text" name="nombre_rol" value="<?php echo htmlspecialchars($r['nombre_rol']); ?>" required>
+		<?php endif; ?>
         
         <label>Descripción:</label>
         <textarea name="descripcion" style="width:100%; height:80px; margin-bottom:15px;"><?php echo htmlspecialchars($r['descripcion']); ?></textarea>
