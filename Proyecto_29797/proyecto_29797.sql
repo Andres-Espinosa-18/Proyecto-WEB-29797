@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 08-02-2026 a las 03:56:45
+-- Tiempo de generación: 09-02-2026 a las 03:45:25
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -189,7 +189,28 @@ INSERT INTO `auditoria` (`id_auditoria`, `id_usuario`, `usuario_nombre`, `accion
 (156, 1, 'Administrador', 'Actualizó al usuario ID 9', '::1', '2026-02-07 22:33:13'),
 (157, 1, 'Administrador', 'Actualizó al usuario ID 7', '::1', '2026-02-07 22:34:39'),
 (158, 1, 'Administrador', 'Actualizó al usuario ID 7', '::1', '2026-02-07 22:34:44'),
-(159, 1, 'Administrador', 'Creó el curso: USABILIDAD', '::1', '2026-02-07 22:54:20');
+(159, 1, 'Administrador', 'Creó el curso: USABILIDAD', '::1', '2026-02-07 22:54:20'),
+(160, NULL, 'Administador', 'Intento de acceso con usuario no existente: Administador', '::1', '2026-02-08 13:19:08'),
+(161, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-08 13:19:17'),
+(162, 1, 'Administrador', 'Inactivó el curso ID 4', '::1', '2026-02-08 13:20:43'),
+(163, 1, 'Administrador', 'Actualizó al usuario ID 11', '::1', '2026-02-08 15:52:08'),
+(164, 1, 'Administrador', 'Creó un nuevo rol: Supervisor', '::1', '2026-02-08 15:53:52'),
+(165, 1, 'Administrador', 'Creó un nuevo rol: Estudiante', '::1', '2026-02-08 15:54:19'),
+(166, 1, 'Administrador', 'Actualizó al usuario ID 9', '::1', '2026-02-08 15:59:21'),
+(167, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-08 15:59:27'),
+(168, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-08 15:59:44'),
+(169, 1, 'Administrador', 'Actualizó al usuario ID 9', '::1', '2026-02-08 15:59:58'),
+(170, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-08 16:00:01'),
+(171, 9, 'daquispe2', 'Ha iniciado sesión correctamente', '::1', '2026-02-08 16:00:11'),
+(172, 9, 'daquispe2', 'Se inscribió en el curso ID: 2', '::1', '2026-02-08 16:00:24'),
+(173, 9, 'daquispe2', 'Ha cerrado sesión', '::1', '2026-02-08 18:01:52'),
+(174, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-08 18:02:03'),
+(175, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Reprobado', '::1', '2026-02-08 18:02:40'),
+(176, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-08 18:02:55'),
+(177, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Reprobado', '::1', '2026-02-08 18:04:51'),
+(178, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-08 18:04:59'),
+(179, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-08 18:08:35'),
+(180, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-08 22:44:46');
 
 -- --------------------------------------------------------
 
@@ -214,7 +235,7 @@ INSERT INTO `cursos` (`id_curso`, `nombre_curso`, `descripcion`, `fecha_inicio`,
 (1, 'Introducción a PHP', 'Curso básico de backend', '2024-03-01', 20, 1),
 (2, 'Base de Datos MySQL', 'Gestión y diseño de BD', '2024-03-15', 30, 1),
 (3, 'JavaScript Moderno', 'ES6 y manipulación del DOM', '2024-04-01', 25, 1),
-(4, 'USABILIDAD', 'ESTUDIAR', '2026-02-11', 50, 1);
+(4, 'USABILIDAD', 'ESTUDIAR', '2026-02-11', 50, 0);
 
 -- --------------------------------------------------------
 
@@ -248,7 +269,34 @@ INSERT INTO `menus` (`id_menu`, `nombre_texto`, `url`, `parent_id`) VALUES
 (16, 'Cursos', 'cursos.php', NULL),
 (17, 'Crear Curso', 'cursos_crear.php', 16),
 (18, 'Editar Curso', 'cursos_actualizar.php', 16),
-(19, 'Eliminar Curso', '#', 16);
+(19, 'Eliminar Curso', '#', 16),
+(20, 'Mis Calificaciones', 'calificaciones.php', NULL),
+(21, 'Inscripción Cursos', 'cursos_inscripcion.php', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `notas`
+--
+
+CREATE TABLE `notas` (
+  `id_nota` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `id_curso` int(11) DEFAULT NULL,
+  `nota1` decimal(4,2) DEFAULT '0.00',
+  `nota2` decimal(4,2) DEFAULT '0.00',
+  `nota3` decimal(4,2) DEFAULT '0.00',
+  `recuperacion` decimal(4,2) DEFAULT NULL,
+  `promedio` decimal(4,2) DEFAULT '0.00',
+  `estado_aprobacion` enum('Aprobado','Reprobado','En Proceso') DEFAULT 'En Proceso'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `notas`
+--
+
+INSERT INTO `notas` (`id_nota`, `id_usuario`, `id_curso`, `nota1`, `nota2`, `nota3`, `recuperacion`, `promedio`, `estado_aprobacion`) VALUES
+(1, 9, 2, '15.00', '15.00', '40.00', NULL, '23.33', 'Aprobado');
 
 -- --------------------------------------------------------
 
@@ -280,7 +328,11 @@ INSERT INTO `permisos_rol` (`id_rol`, `id_menu`) VALUES
 (1, 16),
 (1, 17),
 (1, 18),
-(1, 19);
+(1, 19),
+(1, 20),
+(3, 20),
+(1, 21),
+(3, 21);
 
 -- --------------------------------------------------------
 
@@ -300,7 +352,9 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
 (0, 'SIN_ROL', 'EL USUARIO NO TIENE PERMISOS'),
-(1, 'Administrador', 'El más de más de másiso');
+(1, 'Administrador', 'El más de más de másiso'),
+(2, 'Supervisor', 'Tiene acceso a ver todos los sistemas, no puede modificar'),
+(3, 'Estudiante', 'Capaz de administrar sus cursos, ver sus notas');
 
 -- --------------------------------------------------------
 
@@ -326,11 +380,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `username`, `password`, `nombre_real`, `fecha_nacimiento`, `cedula`, `email`, `direccion`, `ultimo_acceso`, `estado`) VALUES
-(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-07 22:14:53', 1),
+(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-08 18:02:03', 1),
 (7, 'jchavez', '$2y$10$76vVKnl9lbNyvmz490ngo./qmA6D9DUhQ.v1cQguYtEf8yV6falf2', 'Juan Chavez', '0000-00-00', '', '', '', '2026-02-07 20:39:37', 0),
-(9, 'daquispe2', '$2y$10$xw/vW6S6xrkbejly70N2l.7xiqkA6bEf6YtDNhtCW.w9yhS19GNUq', 'DEIVIS', '2026-02-17', '54', 'flickse234@gmail.com', 'Quitumbe', NULL, 1),
+(9, 'daquispe2', '$2y$10$PE0qgvXyGrqaXkdvgvRQXeP4CApJ2KGhIh13B8TC7NdIwiCRSOMti', 'DEIVIS', '2026-02-17', '54', 'flickse234@gmail.com', 'Quitumbe', '2026-02-08 16:00:11', 1),
 (10, 'a', '$2y$10$/4F2pFtluiyR4zobmxTCXeLThKJbN3R1AQaVLLooBI3PZxjqAK9Om', 'andres', '0000-00-00', '', '', '', NULL, 1),
-(11, 'ejemplo1', '$2y$10$roNI85/Z7Gb3zAgpg0UPD.f7tI/WO/FUL503ot9OMtGONsFizLbzS', 'ejemplo', '0000-00-00', '', '', '', NULL, 1),
+(11, 'ejemplo1', '$2y$10$wi0xnCV.D3n118UDK0iHCuXkTKLiHzyDwjwUM4Wapy9g.gHVMj2GO', 'ejemplo', '0000-00-00', '', '', '', NULL, 1),
 (12, 'ejemplo2', '$2y$10$KTRQo/Netk.OpkQ9UiYePugACEbIoi09X49T.mi5skT25PTgUNNBy', 'ejemplo2', '0000-00-00', '', '', '', NULL, 1);
 
 -- --------------------------------------------------------
@@ -350,10 +404,10 @@ CREATE TABLE `usuario_roles` (
 
 INSERT INTO `usuario_roles` (`id_usuario`, `id_rol`) VALUES
 (7, 0),
-(9, 0),
 (11, 0),
 (12, 0),
-(1, 1);
+(1, 1),
+(9, 3);
 
 --
 -- Índices para tablas volcadas
@@ -378,6 +432,14 @@ ALTER TABLE `cursos`
 ALTER TABLE `menus`
   ADD PRIMARY KEY (`id_menu`),
   ADD KEY `parent_id` (`parent_id`);
+
+--
+-- Indices de la tabla `notas`
+--
+ALTER TABLE `notas`
+  ADD PRIMARY KEY (`id_nota`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_curso` (`id_curso`);
 
 --
 -- Indices de la tabla `permisos_rol`
@@ -414,7 +476,7 @@ ALTER TABLE `usuario_roles`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -426,13 +488,19 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de la tabla `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT de la tabla `notas`
+--
+ALTER TABLE `notas`
+  MODIFY `id_nota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -455,6 +523,13 @@ ALTER TABLE `auditoria`
 --
 ALTER TABLE `menus`
   ADD CONSTRAINT `menus_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id_menu`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `notas`
+--
+ALTER TABLE `notas`
+  ADD CONSTRAINT `notas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
+  ADD CONSTRAINT `notas_ibfk_2` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id_curso`);
 
 --
 -- Filtros para la tabla `permisos_rol`

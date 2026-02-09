@@ -9,7 +9,7 @@ $id_rol = $_GET['id_rol'] ?? '';
     <select onchange="cargarVista('roles_permisos.php?id_rol=' + this.value)">
         <option value="">-- Seleccionar Rol --</option>
         <?php
-        $roles = $conn->query("SELECT * FROM roles WHERE id_rol != 1");
+        $roles = $conn->query("SELECT * FROM roles WHERE id_rol != 1 AND id_rol != 0");
         while($r = $roles->fetch_assoc()) {
             $sel = ($id_rol == $r['id_rol']) ? 'selected' : '';
             echo "<option value='{$r['id_rol']}' $sel>{$r['nombre_rol']}</option>";
