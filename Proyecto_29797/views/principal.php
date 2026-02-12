@@ -4,6 +4,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+date_default_timezone_set('America/Guayaquil');
 require_once '../server/db.php'; 
 
 // PASO 1: OBTENER EL ROL AUTOMÁTICAMENTE USANDO LA SESIÓN
@@ -28,41 +29,11 @@ if ($res_rol && $res_rol->num_rows > 0) {
     <div class="dashboard-grid">
         <div class="card clickable" onclick="cargarVista('usuarios.php')">
             <h3>Gestionar Usuarios</h3>
-            <p>Añadir o editar personal</p>
         </div>
         <div class="card info-only">
             <h3>Tu Último Acceso</h3>
             <p><?php echo $_SESSION['user_log'] ?? date('Y-m-d H:i'); ?></p>
         </div>
     </div>
-    
-    <div style="margin-top: 20px;">
-        <h3>Tus Accesos Directos:</h3>
-        <?php 
-        // PASO 2: USAR EL ROL OBTENIDO PARA LISTAR LOS MENÚS
-        // Nota: He quitado la parte de $actuales[] porque eso es para checkbox. 
-        // Aquí solo queremos listar lo que SÍ tiene permiso.
-        
-        $sql_menus = "SELECT m.nombre_texto
-                      FROM menus m 
-                      JOIN permisos_rol pr ON pr.id_menu = m.id_menu 
-                      WHERE pr.id_rol = '$id_rol' 
-                      ORDER BY m.id_menu ASC";
-                      
-        $menus = $conn->query($sql_menus);
-
-        if ($menus && $menus->num_rows > 0):
-            while($m = $menus->fetch_assoc()):
-        ?>
-            <div class="menu-item">
-                <p>✅ <?php echo $m['nombre_texto']; ?></p>
-            </div>
-            
-        <?php 
-            endwhile;
-        else:
-        ?>
-            <p>No tienes menús asignados a tu rol.</p>
-        <?php endif; ?>
-    </div>
+   
 </div>

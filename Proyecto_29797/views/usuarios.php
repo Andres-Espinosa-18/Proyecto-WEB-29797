@@ -27,8 +27,25 @@ function tienePermiso($conn, $user_id, $id_menu) {
 }
 ?>
 
-<div class="contenedor">
+<div class="contenedor" >
     <h2>Gestión de Usuarios</h2>
+    <div style="display: flex; gap: 5px;">
+        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
+               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 250px; outline: none; transition: border 0.3s;"
+               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
+        
+        <button onclick="ejecutarBusqueda('usuario')" 
+                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
+                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
+            Buscar
+        </button>
+        
+        <button onclick="cargarVista('usuarios.php')" 
+                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
+                title="Limpiar b�squeda">
+            Limpiar
+        </button>
+    </div>
     
     <?php if(tienePermiso($conn, $user_id, 10)): ?>
         <button onclick="cargarVista('usuarios_crear.php')" class="btn-success">+ Nuevo Usuario</button>
@@ -52,6 +69,9 @@ function tienePermiso($conn, $user_id, $id_menu) {
         <tr>
             <th>Username</th>
             <th>Nombre del Usuario</th>
+			<th>Cedula</th>
+            <th>Email</th>
+			<th>Direccion</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -64,6 +84,9 @@ function tienePermiso($conn, $user_id, $id_menu) {
         <tr>
             <td><?php echo htmlspecialchars($u['username']); ?></td>
             <td><?php echo htmlspecialchars($u['nombre_real']); ?></td>
+			<td><?php echo htmlspecialchars($u['cedula']); ?></td>
+            <td><?php echo htmlspecialchars($u['email']); ?></td>
+			<td><?php echo htmlspecialchars($u['direccion']); ?></td>
             <td>
                 <?php if(tienePermiso($conn, $user_id, 11)): ?>
                     <button class="btn-change" onclick="cargarVista('usuarios_actualizar.php?id=<?php echo $u['id_usuario']; ?>')">✏️ Editar</button>
@@ -72,7 +95,7 @@ function tienePermiso($conn, $user_id, $id_menu) {
                 <?php if(tienePermiso($conn, $user_id, 12)): ?>
                     
                     <?php if($u['estado'] == 0): // Corregido a doble igual ?>
-                        <button class="btn-change" style="background-color: #48bb78;" onclick="ActivarFila(<?php echo $u['id_usuario']; ?>, 'usuario')"> &#128260 ACTIVAR</button>
+                        <button class="btn-change" onclick="ActivarFila(<?php echo $u['id_usuario']; ?>, 'usuario')"> &#128260 ACTIVAR</button>
                     <?php else: ?>
                         <?php if($u['id_usuario'] != 1): ?>
                            <button class="btn-danger" onclick="eliminarFila(<?php echo $u['id_usuario']; ?>, 'usuario')">🗑️  ELIMINAR</button>
@@ -88,8 +111,6 @@ function tienePermiso($conn, $user_id, $id_menu) {
         ?>
     </tbody>
 </table>
-
-<div id="paginacion" class="paginacion-container"></div>
 
 <script>
     // Variables Globales

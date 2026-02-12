@@ -16,7 +16,23 @@ function tienePermisoRol($conn, $user_id, $id_menu) {
 
 <div class="contenedor">
     <h2>Gesti√≥n de Roles</h2>
-    
+    <div style="display: flex; gap: 5px;">
+        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
+               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 100%; outline: none; transition: border 0.3s;"
+               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
+        
+        <button onclick="ejecutarBusqueda('rol')" 
+                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
+                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
+            Buscar
+        </button>
+        
+        <button onclick="cargarVista('crear_rol.php')" 
+                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
+                title="Limpiar b˙squeda">
+            Limpiar
+        </button>
+    </div>
 	       <div>
             <?php if(tienePermisoRol($conn, $user_id, 13)): ?>
                 <button onclick="cargarVista('roles_crear.php')" class="btn-success">+ Nuevo Rol</button>

@@ -4,7 +4,7 @@ require_once '../server/db.php';
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 $user_id = $_SESSION['id_usuario'] ?? 0;
 
-// Reutilizamos tu función de permisos
+
 function tienePermisoCurso($conn, $user_id, $id_menu) {
     if ($user_id == 0) return false;
     $sql = "SELECT COUNT(*) as total FROM permisos_rol pr
@@ -21,6 +21,24 @@ function tienePermisoCurso($conn, $user_id, $id_menu) {
 <div class="contenedor">
     <h2>Gestión de Cursos</h2>
 
+	    <div style="display: flex; gap: 5px;">
+        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
+               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 250px; outline: none; transition: border 0.3s;"
+               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
+        
+        <button onclick="ejecutarBusqueda('curso')" 
+                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
+                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
+            Buscar
+        </button>
+        
+        <button onclick="cargarVista('cursos.php')" 
+                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
+                title="Limpiar b�squeda">
+            Limpiar
+        </button>
+    </div>
+	
 	<div>
             <?php if(tienePermisoCurso($conn, $user_id, 17)): // Permiso Crear ?>
                 <button onclick="cargarVista('cursos_crear.php')" class="btn-success">+ Nuevo Curso</button>

@@ -2,6 +2,7 @@
 session_start();
 require_once 'db.php';
 require_once 'funciones_auditoria.php';
+date_default_timezone_set('America/Guayaquil');
 
 // 1. BLOQUEO TEMPORAL
 if (isset($_SESSION['tiempo_bloqueo'])) {

@@ -1,8 +1,9 @@
 <?php
-require_once 'server/db.php';
+// --- BLOQUE LÓGICO: ESTO ES NECESARIO PARA QUE NO TE DE ERROR ---
+require_once 'server/db.php'; // Asegúrate de que esta ruta sea correcta según tu estructura
 $user_id = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 0;
 
-// Consulta simplificada para la nueva estructura (IDs 1, 2, 3...)
+// Consulta para obtener los menús
 $sql = "SELECT DISTINCT m.* FROM menus m
         WHERE (m.id_menu IN (
             SELECT pr.id_menu FROM permisos_rol pr
@@ -22,30 +23,36 @@ $menu_data = [];
 if ($res) {
     while($row = $res->fetch_assoc()) { $menu_data[] = $row; }
 }
+// -------------------------------------------------------------
 ?>
 
 <nav class="navbar">
     <ul class="menu-list">
         <li><a href="#" class="nav-link" data-view="principal.php">Inicio</a></li>
-        <?php foreach ($menu_data as $m): ?>
-            <?php if ($m['url'] !== 'principal.php'): // Evitamos duplicar Inicio ?>
-                <li>
-                    <a href="#" class="nav-link" data-view="<?php echo $m['url']; ?>">
-                        <?php echo $m['nombre_texto']; ?>
-                    </a>
-                </li>
-            <?php endif; ?>
-        <?php endforeach; ?>
+        
+        <?php if (!empty($menu_data)): ?>
+            <?php foreach ($menu_data as $m): ?>
+                <?php if ($m['url'] !== 'principal.php'): ?>
+                    <li>
+                        <a href="#" class="nav-link" data-view="<?php echo $m['url']; ?>">
+                            <?php echo $m['nombre_texto']; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
 
     <div class="user-dropdown">
         <div class="user-trigger">
-            <strong><?php echo $_SESSION['username']; ?></strong>
+            <strong><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?></strong>
+            
             <?php if(isset($_SESSION['user_log'])): ?>
-                <small style="display: block; font-size: 0.7rem; color: #bdc3c7;">
-                    Sesión: <?php echo $_SESSION['user_log']; ?>
+                <small id="reloj-sesion" style="display: block; font-size: 0.7rem; color: #bdc3c7;">
+                    <?php echo $_SESSION['user_log']; ?>
                 </small>
             <?php endif; ?>
+            
         </div>
         <ul class="user-menu">
             <li><a href="server/logout.php" class="logout-link">Cerrar Sesión</a></li>
@@ -53,43 +60,46 @@ if ($res) {
     </div>
 </nav>
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. Obtener todos los enlaces del menú
+    // --- RELOJ EN TIEMPO REAL ---
+    function actualizarRelojSesion() {
+        const ahora = new Date();
+        const dia = String(ahora.getDate()).padStart(2, '0');
+        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+        const anio = ahora.getFullYear();
+        const horas = String(ahora.getHours()).padStart(2, '0');
+        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const segundos = String(ahora.getSeconds()).padStart(2, '0');
+        
+        // Actualiza el texto con la hora actual
+        const etiquetaReloj = document.getElementById('reloj-sesion');
+        if (etiquetaReloj) {
+            etiquetaReloj.innerText = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+        }
+    }
+    // Activa el reloj cada segundo
+    setInterval(actualizarRelojSesion, 1000);
+
+
+    // --- LÓGICA DE NAVEGACIÓN (TUS MENÚS) ---
     const links = document.querySelectorAll('.nav-link');
 
-    // 2. Función para activar un menú específico
     window.activarMenu = function(vista) {
-        // Quitamos la clase 'active' de TODOS los links
         links.forEach(link => link.classList.remove('active'));
-
-        // Buscamos el link que tenga el data-view igual a la vista cargada
-        // Si la vista tiene parámetros (ej: usuarios.php?id=1), limpiamos para buscar solo usuarios.php
         const vistaLimpia = vista.split('?')[0]; 
-        
         const linkActivo = document.querySelector(`.nav-link[data-view="${vistaLimpia}"]`);
-        
-        // Si encontramos el link, lo marcamos
-        if (linkActivo) {
-            linkActivo.classList.add('active');
-        }
+        if (linkActivo) linkActivo.classList.add('active');
     };
 
-    // 3. Evento Click para los menús
     links.forEach(link => {
         link.addEventListener('click', function() {
-            // Al hacer clic, marcamos este botón como activo visualmente
             links.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
-            
-            // Aquí deberías llamar a tu función de cargar vista si no lo hace el html
-            // cargarVista(this.getAttribute('data-view')); 
         });
     });
 
-    // 4. Marcar "Inicio" por defecto al cargar la página por primera vez
     activarMenu('principal.php');
 });
 </script>

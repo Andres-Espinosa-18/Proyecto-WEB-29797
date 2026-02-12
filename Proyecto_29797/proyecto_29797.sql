@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 09-02-2026 a las 03:45:25
+-- Tiempo de generación: 12-02-2026 a las 18:07:14
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -210,7 +210,66 @@ INSERT INTO `auditoria` (`id_auditoria`, `id_usuario`, `usuario_nombre`, `accion
 (177, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Reprobado', '::1', '2026-02-08 18:04:51'),
 (178, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-08 18:04:59'),
 (179, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-08 18:08:35'),
-(180, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-08 22:44:46');
+(180, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-08 22:44:46'),
+(181, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-09 11:58:29'),
+(182, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-09 12:48:53'),
+(183, NULL, 'aeespinosa6', 'Intento de acceso con usuario no existente: aeespinosa6', '::1', '2026-02-09 19:37:39'),
+(184, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-09 19:37:45'),
+(185, 1, 'Administrador', 'Creó el curso: TEstt', '::1', '2026-02-09 19:42:01'),
+(186, 1, 'Administrador', 'Inactivó el curso ID 5', '::1', '2026-02-09 19:42:07'),
+(187, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 19:51:24'),
+(188, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 19:53:55'),
+(189, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 19:55:19'),
+(190, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 19:58:21'),
+(191, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 19:58:55'),
+(192, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 20:01:19'),
+(193, 1, 'Administrador', 'Inactivó el curso ID 5', '::1', '2026-02-09 20:01:32'),
+(194, 1, 'Administrador', 'Activó al curso: TEstt', '::1', '2026-02-09 20:03:44'),
+(195, 1, 'Administrador', 'Activó al curso: USABILIDAD', '::1', '2026-02-09 20:03:51'),
+(196, 1, 'Administrador', 'Actualizó el curso ID: 5', '::1', '2026-02-09 20:04:19'),
+(197, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-09 20:14:53'),
+(198, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:23:11'),
+(199, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:25:24'),
+(200, 7, 'jchavez', 'Fallo de contraseña (Intento 1)', '::1', '2026-02-11 07:25:29'),
+(201, 7, 'jchavez', 'Fallo de contraseña (Intento 2)', '::1', '2026-02-11 07:25:40'),
+(202, 7, 'jchavez', 'Fallo de contraseña (Intento 3)', '::1', '2026-02-11 07:25:46'),
+(203, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:26:03'),
+(204, 1, 'Administrador', 'Actualizó al usuario ID 7', '::1', '2026-02-11 07:31:12'),
+(205, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:31:19'),
+(206, 7, 'jchavez', 'Intento de acceso: Usuario inactivo', '::1', '2026-02-11 07:31:22'),
+(207, 7, 'jchavez', 'Fallo de contraseña (Intento 2)', '::1', '2026-02-11 07:31:32'),
+(208, NULL, 'Administradoer', 'Intento de acceso con usuario no existente: Administradoer', '::1', '2026-02-11 07:31:39'),
+(209, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:31:53'),
+(210, 1, 'Administrador', 'Actualizó al usuario ID 7', '::1', '2026-02-11 07:32:48'),
+(211, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:32:55'),
+(212, 7, 'jchavez', 'Intento de acceso: Usuario inactivo', '::1', '2026-02-11 07:32:59'),
+(213, 7, 'jchavez', 'Fallo de contraseña (Intento 2)', '::1', '2026-02-11 07:33:02'),
+(214, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:33:07'),
+(215, 1, 'Administrador', 'Actualizó al usuario ID 7', '::1', '2026-02-11 07:33:40'),
+(216, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:33:48'),
+(217, 7, 'jchavez', 'Intento de acceso: Usuario inactivo', '::1', '2026-02-11 07:33:57'),
+(218, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:34:05'),
+(219, 1, 'Administrador', 'Activó al usuario: jchavez', '::1', '2026-02-11 07:34:28'),
+(220, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:34:32'),
+(221, 7, 'jchavez', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:34:36'),
+(222, 7, 'jchavez', 'Ha cerrado sesión', '::1', '2026-02-11 07:40:29'),
+(223, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:40:38'),
+(224, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:46:54'),
+(225, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:47:01'),
+(226, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:48:06'),
+(227, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:48:11'),
+(228, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:52:17'),
+(229, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:52:23'),
+(230, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 07:54:26'),
+(231, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 07:54:32'),
+(232, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Reprobado', '::1', '2026-02-11 08:23:31'),
+(233, 1, 'Administrador', 'Actualizó notas ID: 1 - Estado: Aprobado', '::1', '2026-02-11 08:23:44'),
+(234, 1, 'Administrador', 'Actualizó al usuario ID 10', '::1', '2026-02-11 08:24:18'),
+(235, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-11 08:24:21'),
+(236, 10, 'a', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 08:24:43'),
+(237, 10, 'a', 'Se inscribió en el curso ID: 2', '::1', '2026-02-11 08:25:04'),
+(238, 10, 'a', 'Ha cerrado sesión', '::1', '2026-02-11 08:25:37'),
+(239, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 08:25:51');
 
 -- --------------------------------------------------------
 
@@ -235,7 +294,8 @@ INSERT INTO `cursos` (`id_curso`, `nombre_curso`, `descripcion`, `fecha_inicio`,
 (1, 'Introducción a PHP', 'Curso básico de backend', '2024-03-01', 20, 1),
 (2, 'Base de Datos MySQL', 'Gestión y diseño de BD', '2024-03-15', 30, 1),
 (3, 'JavaScript Moderno', 'ES6 y manipulación del DOM', '2024-04-01', 25, 1),
-(4, 'USABILIDAD', 'ESTUDIAR', '2026-02-11', 50, 0);
+(4, 'USABILIDAD', 'ESTUDIAR', '2026-02-11', 50, 1),
+(5, 'TEstt', 'wru', '2026-02-05', 40, 1);
 
 -- --------------------------------------------------------
 
@@ -296,7 +356,8 @@ CREATE TABLE `notas` (
 --
 
 INSERT INTO `notas` (`id_nota`, `id_usuario`, `id_curso`, `nota1`, `nota2`, `nota3`, `recuperacion`, `promedio`, `estado_aprobacion`) VALUES
-(1, 9, 2, '15.00', '15.00', '40.00', NULL, '23.33', 'Aprobado');
+(1, 9, 2, '15.00', '15.00', '8.00', '19.00', '15.83', 'Aprobado'),
+(2, 10, 2, '0.00', '0.00', '0.00', NULL, '0.00', 'En Proceso');
 
 -- --------------------------------------------------------
 
@@ -380,10 +441,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `username`, `password`, `nombre_real`, `fecha_nacimiento`, `cedula`, `email`, `direccion`, `ultimo_acceso`, `estado`) VALUES
-(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-08 18:02:03', 1),
-(7, 'jchavez', '$2y$10$76vVKnl9lbNyvmz490ngo./qmA6D9DUhQ.v1cQguYtEf8yV6falf2', 'Juan Chavez', '0000-00-00', '', '', '', '2026-02-07 20:39:37', 0),
+(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-11 08:25:51', 1),
+(7, 'jchavez', '$2y$10$92mtP9NZGEUHnmsHt7yTm.wufbFmOp.vHCM.FgzRjYe3284DeU9i2', 'Juan Chavez', '0000-00-00', '12345678', '', '', '2026-02-11 07:34:36', 1),
 (9, 'daquispe2', '$2y$10$PE0qgvXyGrqaXkdvgvRQXeP4CApJ2KGhIh13B8TC7NdIwiCRSOMti', 'DEIVIS', '2026-02-17', '54', 'flickse234@gmail.com', 'Quitumbe', '2026-02-08 16:00:11', 1),
-(10, 'a', '$2y$10$/4F2pFtluiyR4zobmxTCXeLThKJbN3R1AQaVLLooBI3PZxjqAK9Om', 'andres', '0000-00-00', '', '', '', NULL, 1),
+(10, 'a', '$2y$10$tdnB3QeeUmmB3yyspsphlupjjrfuzuKBiLlr7SJJflm3wpClnYqpC', 'andres', '0000-00-00', '', '', '', '2026-02-11 08:24:43', 1),
 (11, 'ejemplo1', '$2y$10$wi0xnCV.D3n118UDK0iHCuXkTKLiHzyDwjwUM4Wapy9g.gHVMj2GO', 'ejemplo', '0000-00-00', '', '', '', NULL, 1),
 (12, 'ejemplo2', '$2y$10$KTRQo/Netk.OpkQ9UiYePugACEbIoi09X49T.mi5skT25PTgUNNBy', 'ejemplo2', '0000-00-00', '', '', '', NULL, 1);
 
@@ -407,7 +468,8 @@ INSERT INTO `usuario_roles` (`id_usuario`, `id_rol`) VALUES
 (11, 0),
 (12, 0),
 (1, 1),
-(9, 3);
+(9, 3),
+(10, 3);
 
 --
 -- Índices para tablas volcadas
@@ -476,13 +538,13 @@ ALTER TABLE `usuario_roles`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `menus`
@@ -494,7 +556,7 @@ ALTER TABLE `menus`
 -- AUTO_INCREMENT de la tabla `notas`
 --
 ALTER TABLE `notas`
-  MODIFY `id_nota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_nota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`

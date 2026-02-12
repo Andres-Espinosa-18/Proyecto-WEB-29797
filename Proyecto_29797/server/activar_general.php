@@ -20,7 +20,21 @@ if ($id > 0) {
         // REGISTRO EN AUDITORÍA
         registrarEvento($conn, "Activó al usuario: " . $nombre_afectado);
         echo "Usuario activado con éxito.";
-    } 
+    } else if ($tipo === 'curso') {
+        $stmt_info = $conn->prepare("SELECT nombre_curso FROM cursos WHERE id_curso = ?");
+        $stmt_info->bind_param("i", $id);
+        $stmt_info->execute();
+        $res_info = $stmt_info->get_result();
+        $c_info = $res_info->fetch_assoc();
+        $curso_afectado = $c_info['nombre_curso'] ?? "ID $id";
+
+        $conn->query("UPDATE cursos SET estado = 1 WHERE id_curso = $id");
+        
+        // REGISTRO EN AUDITORÍA
+        registrarEvento($conn, "Activó al curso: " . $curso_afectado);
+        echo "Curso activado con éxito.";
+	}
+	
 } else {
     echo "Error: ID no válido.";
 }

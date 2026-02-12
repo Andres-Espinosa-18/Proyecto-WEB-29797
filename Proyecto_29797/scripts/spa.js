@@ -98,7 +98,7 @@ function eliminarFila(id, tipo) {
         .then(data => {
             alert(data);
             // Recargamos la vista actual para ver los cambios
-            cargarVista(tipo === 'usuario' ? 'usuarios.php' : 'crear_rol.php');
+            cargarVista(tipo === 'usuario' ? 'usuarios.php' : tipo === 'rol' ? 'crear_rol.php' : 'cursos.php');
         });
     }
 }
@@ -119,9 +119,62 @@ function ActivarFila(id, tipo) {
         .then(data => {
             alert(data);
             // Recargamos la vista actual para ver los cambios
-            cargarVista(tipo === 'usuario' ? 'usuarios.php' : 'crear_rol.php');
+            cargarVista(tipo === 'usuario' ? 'usuarios.php' : tipo === 'rol' ? 'crear_rol.php' : 'cursos.php');
         });
     }
 }
 
+window.ejecutarBusqueda = function(tipoEntidad) {
 
+    const input = document.getElementById('inputBusqueda');
+
+    const termino = input ? input.value : (document.getElementById('busqUser') ? document.getElementById('busqUser').value : "");
+    const fecha = document.getElementById('busqFecha') ? document.getElementById('busqFecha').value : "";
+
+
+    const tablaActiva = document.querySelector('.tabla-gestion');
+    if (!tablaActiva) {
+        console.error("No se encontró una tabla con la clase .tabla-gestion");
+        return;
+    }
+    const cuerpoTabla = tablaActiva.querySelector('tbody');
+
+    // 3. Preparamos los datos para el servidor
+    const datos = new FormData();
+    datos.append('tipo', tipoEntidad);
+    datos.append('termino', termino);
+    datos.append('fecha', fecha); // Solo se usará en el caso 'auditoria' del PHP
+
+    fetch('server/busqueda_general.php', {
+        method: 'POST',
+        body: datos
+    })
+    .then(res => res.text())
+    .then(html => {
+        // Inyectamos los resultados
+        cuerpoTabla.innerHTML = html;
+
+        if (tipoEntidad === 'auditoria') {
+            if (typeof paginaActualAuditoria !== 'undefined') {
+                paginaActualAuditoria = 1;
+                actualizarPaginacionAuditoria();
+            }
+        } else {
+            // Para Usuarios, Roles y Cursos usamos la paginación estándar
+            if (typeof paginaActual !== 'undefined') {
+                paginaActual = 1;
+                actualizarPaginacion();
+            }
+        }
+
+        // Mensaje si no hay resultados
+        if (html.trim() === "") {
+            cuerpoTabla.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px; color:#a0aec0;">
+                No se encontraron registros para "${termino}" ${fecha ? ' en la fecha ' + fecha : ''}
+            </td></tr>`;
+        }
+    })
+    .catch(err => {
+        console.error("Error en el fetch de búsqueda:", err);
+    });
+}
