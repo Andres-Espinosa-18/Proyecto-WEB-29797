@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 12-02-2026 a las 18:07:14
+-- Tiempo de generación: 12-02-2026 a las 21:09:31
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -269,7 +269,68 @@ INSERT INTO `auditoria` (`id_auditoria`, `id_usuario`, `usuario_nombre`, `accion
 (236, 10, 'a', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 08:24:43'),
 (237, 10, 'a', 'Se inscribió en el curso ID: 2', '::1', '2026-02-11 08:25:04'),
 (238, 10, 'a', 'Ha cerrado sesión', '::1', '2026-02-11 08:25:37'),
-(239, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 08:25:51');
+(239, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-11 08:25:51'),
+(240, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 13:38:08'),
+(241, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-12 13:38:15'),
+(242, 1, 'Administrador', 'Eliminó el rol al usuario: ID 3', '::1', '2026-02-12 13:38:38'),
+(243, 1, 'Administrador', 'Eliminó el rol: Estudiante', '::1', '2026-02-12 13:38:38'),
+(244, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 13:40:30'),
+(245, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:40:35'),
+(246, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:41:22'),
+(247, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:41:56'),
+(248, 1, 'Administrador', 'Ha iniciado sesión correctamente', '::1', '2026-02-12 13:48:51'),
+(249, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 13:48:54'),
+(250, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:48:59'),
+(251, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:49:36'),
+(252, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:51:34'),
+(253, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:52:31'),
+(254, NULL, 'est1', 'Intento de acceso con usuario no existente: est1', '::1', '2026-02-12 13:52:35'),
+(255, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 13:59:26'),
+(256, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 13:59:30'),
+(258, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 14:03:21'),
+(260, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 14:05:11'),
+(262, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 14:05:19'),
+(264, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 14:05:39'),
+(265, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 14:05:43'),
+(266, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 14:16:19'),
+(267, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 14:16:32'),
+(268, 1, 'Administrador', 'Admin inscribió al estudiante ID 1 en curso ID 5', '::1', '2026-02-12 14:17:19'),
+(269, 1, 'Administrador', 'Admin eliminó inscripción (ID Nota: 3)', '::1', '2026-02-12 14:17:29'),
+(270, 1, 'Administrador', 'Se inscribió en el curso ID: 2 (usuario)', '::1', '2026-02-12 14:18:11'),
+(271, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 14:27:24'),
+(272, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 14:27:29'),
+(273, 1, 'Administrador', 'Inactivó al usuario: a', '::1', '2026-02-12 14:30:15'),
+(274, 1, 'Administrador', 'Inactivó al estudiante: Estudiante Prueba', '::1', '2026-02-12 14:32:57'),
+(275, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 14:34:22'),
+(276, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 14:34:35'),
+(277, 1, 'Administrador', 'Activó al estudiante: Estudiante Prueba', '::1', '2026-02-12 14:34:40'),
+(278, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 14:34:45'),
+(280, 1, 'est1', 'Se inscribió en el curso ID: 1 (estudiante)', '::1', '2026-02-12 14:34:58'),
+(281, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 14:35:15'),
+(282, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 14:35:25'),
+(283, 1, 'Administrador', 'Actualizó notas ID: 5 - Estado: Reprobado', '::1', '2026-02-12 14:35:53'),
+(284, 1, 'Administrador', 'Actualizó notas ID: 4 - Estado: Reprobado', '::1', '2026-02-12 14:36:11'),
+(285, 1, 'Administrador', 'Admin inscribió al estudiante ID 1 en curso ID 5', '::1', '2026-02-12 14:37:22'),
+(286, 1, 'Administrador', 'Actualizó notas ID: 5 - Estado: Reprobado', '::1', '2026-02-12 14:38:29'),
+(287, 1, 'Administrador', 'Actualizó notas ID: 5 - Estado: Reprobado', '::1', '2026-02-12 14:39:43'),
+(288, 1, 'Administrador', 'Actualizó notas ID: 5 - Estado: Reprobado', '::1', '2026-02-12 14:40:39'),
+(289, 1, 'Administrador', 'Actualizó notas ID: 5 - Estado: Aprobado', '::1', '2026-02-12 14:44:09'),
+(290, 1, 'Administrador', 'Actualizó notas ID: 6 - Estado: Reprobado', '::1', '2026-02-12 14:44:21'),
+(291, 1, 'Administrador', 'Inactivó al estudiante: Estudiante Prueba', '::1', '2026-02-12 14:44:46'),
+(292, 1, 'Administrador', 'Activó al estudiante: Estudiante Prueba', '::1', '2026-02-12 14:44:49'),
+(293, 1, 'Administrador', 'Admin eliminó inscripción (ID Nota: 6)', '::1', '2026-02-12 15:05:37'),
+(294, 1, 'Administrador', 'Admin inscribió al estudiante ID 1 en curso ID 5', '::1', '2026-02-12 15:05:43'),
+(295, 1, 'Administrador', 'Actualizó notas ID: 7 - Estado: Reprobado', '::1', '2026-02-12 15:06:08'),
+(296, 1, 'Administrador', 'Actualizó notas ID: 7 - Estado: Reprobado', '::1', '2026-02-12 15:06:20'),
+(297, 1, 'Administrador', 'Inactivó al estudiante: Estudiante Prueba', '::1', '2026-02-12 15:07:08'),
+(298, 1, 'Administrador', 'Activó al estudiante: Estudiante Prueba', '::1', '2026-02-12 15:07:12'),
+(299, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 15:07:14'),
+(301, 1, 'est1', 'Ha cerrado sesión', '::1', '2026-02-12 15:19:16'),
+(302, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 15:26:40'),
+(303, 1, 'Administrador', 'Ha cerrado sesión', '::1', '2026-02-12 15:26:43'),
+(304, 1, 'Administrador', 'Usuario Administrativo inició sesión', '::1', '2026-02-12 15:26:48'),
+(305, 1, 'Administrador', 'Creó al usuario: daquispe2 y le asignó el Rol ID: 0', '::1', '2026-02-12 15:30:37'),
+(306, 1, 'Administrador', 'Creó al usuario: das y le asignó el Rol ID: 0', '::1', '2026-02-12 15:31:25');
 
 -- --------------------------------------------------------
 
@@ -296,6 +357,32 @@ INSERT INTO `cursos` (`id_curso`, `nombre_curso`, `descripcion`, `fecha_inicio`,
 (3, 'JavaScript Moderno', 'ES6 y manipulación del DOM', '2024-04-01', 25, 1),
 (4, 'USABILIDAD', 'ESTUDIAR', '2026-02-11', 50, 1),
 (5, 'TEstt', 'wru', '2026-02-05', 40, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estudiantes`
+--
+
+CREATE TABLE `estudiantes` (
+  `id_estudiante` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `direccion` text,
+  `correo` varchar(100) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `cedula` varchar(20) NOT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `estado` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `estudiantes`
+--
+
+INSERT INTO `estudiantes` (`id_estudiante`, `nombre`, `direccion`, `correo`, `telefono`, `cedula`, `fecha_nacimiento`, `usuario`, `password`, `estado`) VALUES
+(1, 'Estudiante Prueba', 'Av. Siempre Viva 123', 'est1@correo.com', '0999999999', '1700000000', '2000-01-01', 'est1', '$2y$10$o7E64pVMVf929K2Tn3TBF.F13yNCf0WHaLhlCo6/Pjb3aNxZDJoi2', 1);
 
 -- --------------------------------------------------------
 
@@ -331,7 +418,7 @@ INSERT INTO `menus` (`id_menu`, `nombre_texto`, `url`, `parent_id`) VALUES
 (18, 'Editar Curso', 'cursos_actualizar.php', 16),
 (19, 'Eliminar Curso', '#', 16),
 (20, 'Mis Calificaciones', 'calificaciones.php', NULL),
-(21, 'Inscripción Cursos', 'cursos_inscripcion.php', NULL);
+(23, 'Estudiantes', 'estudiantes.php', NULL);
 
 -- --------------------------------------------------------
 
@@ -348,16 +435,17 @@ CREATE TABLE `notas` (
   `nota3` decimal(4,2) DEFAULT '0.00',
   `recuperacion` decimal(4,2) DEFAULT NULL,
   `promedio` decimal(4,2) DEFAULT '0.00',
-  `estado_aprobacion` enum('Aprobado','Reprobado','En Proceso') DEFAULT 'En Proceso'
+  `estado_aprobacion` enum('Aprobado','Reprobado','En Proceso') DEFAULT 'En Proceso',
+  `tipo_usuario` varchar(20) DEFAULT 'usuario'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `notas`
 --
 
-INSERT INTO `notas` (`id_nota`, `id_usuario`, `id_curso`, `nota1`, `nota2`, `nota3`, `recuperacion`, `promedio`, `estado_aprobacion`) VALUES
-(1, 9, 2, '15.00', '15.00', '8.00', '19.00', '15.83', 'Aprobado'),
-(2, 10, 2, '0.00', '0.00', '0.00', NULL, '0.00', 'En Proceso');
+INSERT INTO `notas` (`id_nota`, `id_usuario`, `id_curso`, `nota1`, `nota2`, `nota3`, `recuperacion`, `promedio`, `estado_aprobacion`, `tipo_usuario`) VALUES
+(5, 1, 1, '14.00', '14.00', '14.00', NULL, '14.00', 'Aprobado', 'estudiante'),
+(7, 1, 5, '2.00', '2.00', '2.00', NULL, '2.00', 'Reprobado', 'estudiante');
 
 -- --------------------------------------------------------
 
@@ -390,10 +478,7 @@ INSERT INTO `permisos_rol` (`id_rol`, `id_menu`) VALUES
 (1, 17),
 (1, 18),
 (1, 19),
-(1, 20),
-(3, 20),
-(1, 21),
-(3, 21);
+(1, 23);
 
 -- --------------------------------------------------------
 
@@ -414,8 +499,7 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
 (0, 'SIN_ROL', 'EL USUARIO NO TIENE PERMISOS'),
 (1, 'Administrador', 'El más de más de másiso'),
-(2, 'Supervisor', 'Tiene acceso a ver todos los sistemas, no puede modificar'),
-(3, 'Estudiante', 'Capaz de administrar sus cursos, ver sus notas');
+(2, 'Supervisor', 'Tiene acceso a ver todos los sistemas, no puede modificar');
 
 -- --------------------------------------------------------
 
@@ -427,7 +511,7 @@ CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `nombre_real` varchar(100) NOT NULL,
+  `nombre_real` varchar(100) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `cedula` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
@@ -441,12 +525,13 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `username`, `password`, `nombre_real`, `fecha_nacimiento`, `cedula`, `email`, `direccion`, `ultimo_acceso`, `estado`) VALUES
-(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-11 08:25:51', 1),
+(1, 'Administrador', '$2y$10$YP1OQjdP401hYGsbulOYcujc8hfhKZCpKQ5XFGveUMLspWUZd0oKW', 'ADMIN MAESTRO', '2026-02-05', '1721676268', 'flickse234@gmail.com', 'Quitumbe', '2026-02-12 13:48:51', 1),
 (7, 'jchavez', '$2y$10$92mtP9NZGEUHnmsHt7yTm.wufbFmOp.vHCM.FgzRjYe3284DeU9i2', 'Juan Chavez', '0000-00-00', '12345678', '', '', '2026-02-11 07:34:36', 1),
 (9, 'daquispe2', '$2y$10$PE0qgvXyGrqaXkdvgvRQXeP4CApJ2KGhIh13B8TC7NdIwiCRSOMti', 'DEIVIS', '2026-02-17', '54', 'flickse234@gmail.com', 'Quitumbe', '2026-02-08 16:00:11', 1),
-(10, 'a', '$2y$10$tdnB3QeeUmmB3yyspsphlupjjrfuzuKBiLlr7SJJflm3wpClnYqpC', 'andres', '0000-00-00', '', '', '', '2026-02-11 08:24:43', 1),
+(10, 'a', '$2y$10$tdnB3QeeUmmB3yyspsphlupjjrfuzuKBiLlr7SJJflm3wpClnYqpC', 'andres', '0000-00-00', '', '', '', '2026-02-11 08:24:43', 0),
 (11, 'ejemplo1', '$2y$10$wi0xnCV.D3n118UDK0iHCuXkTKLiHzyDwjwUM4Wapy9g.gHVMj2GO', 'ejemplo', '0000-00-00', '', '', '', NULL, 1),
-(12, 'ejemplo2', '$2y$10$KTRQo/Netk.OpkQ9UiYePugACEbIoi09X49T.mi5skT25PTgUNNBy', 'ejemplo2', '0000-00-00', '', '', '', NULL, 1);
+(12, 'ejemplo2', '$2y$10$KTRQo/Netk.OpkQ9UiYePugACEbIoi09X49T.mi5skT25PTgUNNBy', 'ejemplo2', '0000-00-00', '', '', '', NULL, 1),
+(14, 'das', '$2y$10$3mPZ6HbZIgC8B436h1jtNe9eHoXAh3gZD79/EiAMzfVQj.pifedpG', 'DEIVIS', '2026-02-15', '', '', '', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -465,11 +550,12 @@ CREATE TABLE `usuario_roles` (
 
 INSERT INTO `usuario_roles` (`id_usuario`, `id_rol`) VALUES
 (7, 0),
+(9, 0),
+(10, 0),
 (11, 0),
 (12, 0),
-(1, 1),
-(9, 3),
-(10, 3);
+(14, 0),
+(1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -487,6 +573,14 @@ ALTER TABLE `auditoria`
 --
 ALTER TABLE `cursos`
   ADD PRIMARY KEY (`id_curso`);
+
+--
+-- Indices de la tabla `estudiantes`
+--
+ALTER TABLE `estudiantes`
+  ADD PRIMARY KEY (`id_estudiante`),
+  ADD UNIQUE KEY `usuario` (`usuario`),
+  ADD UNIQUE KEY `cedula` (`cedula`);
 
 --
 -- Indices de la tabla `menus`
@@ -538,7 +632,7 @@ ALTER TABLE `usuario_roles`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
@@ -547,16 +641,22 @@ ALTER TABLE `cursos`
   MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT de la tabla `estudiantes`
+--
+ALTER TABLE `estudiantes`
+  MODIFY `id_estudiante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `notas`
 --
 ALTER TABLE `notas`
-  MODIFY `id_nota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_nota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -568,7 +668,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
@@ -590,7 +690,6 @@ ALTER TABLE `menus`
 -- Filtros para la tabla `notas`
 --
 ALTER TABLE `notas`
-  ADD CONSTRAINT `notas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
   ADD CONSTRAINT `notas_ibfk_2` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id_curso`);
 
 --
