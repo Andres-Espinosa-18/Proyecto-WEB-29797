@@ -75,25 +75,21 @@ function tienePermisoCurso($conn, $user_id, $id_menu) {
             if ($res):
                 while($c = $res->fetch_assoc()):
             ?>
-            <tr>
-                <td><strong><?php echo htmlspecialchars($c['nombre_curso']); ?></strong></td>
-                <td><?php echo htmlspecialchars(substr($c['descripcion'], 0, 50)) . '...'; ?></td>
-                <td><?php echo date('d/m/Y', strtotime($c['fecha_inicio'])); ?></td>
-                <td><?php echo $c['duracion_horas']; ?> hrs</td>
-                <td>
-                    <?php if(tienePermisoCurso($conn, $user_id, 18)): ?>
-                        <button class="btn-change" onclick="cargarVista('cursos_actualizar.php?id=<?php echo $c['id_curso']; ?>')">✏️ Editar</button>
-                    <?php endif; ?>
+							<tr>
+					<td><?php echo htmlspecialchars($c['nombre_curso']); ?></td>
+					<td><?php echo htmlspecialchars($c['descripcion']); ?></td>
+					<td><?php echo $c['fecha_inicio']; ?></td>
+					<td><?php echo htmlspecialchars($c['duracion_horas']); ?></td>
+					<td>
+						<button class='btn-change' onclick="cargarVista('cursos_actualizar.php?id=<?php echo $c['id_curso']; ?>')">EDITAR</button>
 
-                    <?php if(tienePermisoCurso($conn, $user_id, 19)): ?>
-                        <?php if($c['estado'] == 0): ?>
-                            <button class="btn-change" style="background-color: #38a169;" onclick="ActivarFila(<?php echo $c['id_curso']; ?>, 'curso')">🔄 ACTIVAR</button>
-                        <?php else: ?>
-                            <button class="btn-danger" onclick="eliminarFila(<?php echo $c['id_curso']; ?>, 'curso')">🗑️ ELIMINAR</button>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
+						<button class='btn-danger' onclick="eliminarFila(<?php echo $c['id_curso']; ?>, 'curso')">ELIMINAR</button>
+
+						<button class='btn-success' style="margin-left:5px;" onclick="cargarVista('cursos_ver.php?id=<?php echo $c['id_curso']; ?>')">
+							 Alumnos
+						</button>
+					</td>
+				</tr>
             <?php 
                 endwhile; 
             endif;
