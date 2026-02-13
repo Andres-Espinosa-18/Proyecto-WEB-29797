@@ -16,19 +16,19 @@
             </div>
 
             <?php if(isset($_GET['error'])): ?>
-                <div class="alert alert-danger">
-					<?php 
-						if($_GET['error'] == 'credenciales') {
-							echo "Usuario o clave incorrectos.";
-						} elseif($_GET['error'] == 'sesion_expirada') {
-							echo "Tu sesión ha expirado.";
-						} elseif($_GET['error'] == 'inactivo') {
-							echo "Tu cuenta ha sido desactivada. Contacta al administrador.";
-						} elseif($_GET['error'] == 'bloqueado') {
-							$tiempo = isset($_GET['tiempo']) ? intval($_GET['tiempo']) : 10;
-							echo "Has superado el límite de intentos. Por favor, espera <b>$tiempo segundos</b> antes de volver a intentar.";
-						}
-					?>
+                <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 4px; text-align: center;">
+                    <?php 
+                        if($_GET['error'] == 'credenciales') {
+                            echo "Usuario o clave incorrectos.";
+                        } elseif($_GET['error'] == 'sesion_expirada') {
+                            echo "Tu sesión ha expirado.";
+                        } elseif($_GET['error'] == 'inactivo') {
+                            echo "Tu cuenta ha sido desactivada. Contacta al administrador.";
+                        } elseif($_GET['error'] == 'bloqueado') {
+                            $tiempo = isset($_GET['tiempo']) ? intval($_GET['tiempo']) : 10;
+                            echo "Has superado el límite de intentos.<br>Por favor, espera <b>$tiempo segundos</b> antes de volver a intentar.";
+                        }
+                    ?>
                 </div>
             <?php endif; ?>
 

@@ -1,12 +1,12 @@
 <?php
-// Evitar error si se incluye varias veces
+// 1. Conexión y control de sesión
 require_once 'server/db.php';
 
 $rol_sistema = isset($_SESSION['rol_sistema']) ? $_SESSION['rol_sistema'] : 'invitado';
 $user_id = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 0;
 $menu_data = [];
 
-// Solo cargamos menÃº dinÃ¡mico de BD si es ADMINISTRATIVO
+// 2. Lógica de Menú: Solo cargamos de BD si es ADMINISTRATIVO
 if ($rol_sistema === 'administrativo') {
     $sql = "SELECT DISTINCT m.* FROM menus m
             WHERE (m.id_menu IN (
@@ -52,22 +52,33 @@ if ($rol_sistema === 'administrativo') {
         </ul>
     </div>
 
-    <div class="user-dropdown">
-        <div class="user-trigger">
-            <strong><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?></strong>
-            <small id="reloj-sesion" style="display: block; font-size: 0.7rem; color: #bdc3c7;">
-                <?php echo isset($_SESSION['user_log']) ? $_SESSION['user_log'] : ''; ?>
-            </small>
-            <small style="color: #63b3ed;"><?php echo strtoupper($rol_sistema); ?></small>
-        </div>
-        <ul class="user-menu">
-            <li><a href="server/logout.php" class="logout-link">Cerrar SesiÃ³n</a></li>
-        </ul>
+    <div class="user-section" style="display: flex; align-items: center; gap: 20px;">
+        
+        <div class="user-dropdown">
+    <div class="user-trigger" onclick="toggleMenuUser()" style="cursor:pointer; text-align: right;">
+        <strong style="display:block;"><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?></strong>
+        <small id="reloj-sesion" style="display: block; font-size: 0.75rem; color: #bdc3c7; font-family: monospace;">
+            Cargando hora...
+        </small>
+        <small style="color: #63b3ed; font-weight: bold; font-size: 0.7rem; text-transform: uppercase;">
+            <?php echo $rol_sistema; ?>
+        </small>
+    </div>
+    
+    <ul class="user-menu" id="dropdown-user">
+        <li>
+            <a href="#" onclick="abrirModal('perfil.php')"> &#9881; Mi Perfil</a>
+        </li>
+        
+        <li><a href="server/logout.php" class="logout-link"> &#128721; Cerrar Sesi&oacute;n</a></li>
+    </ul>
+</div>
     </div>
 </nav>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // --- 1. RELOJ EN VIVO ---
     function actualizarRelojSesion() {
         const ahora = new Date();
         const texto = ahora.getDate().toString().padStart(2,'0') + '/' + 
@@ -80,25 +91,30 @@ document.addEventListener('DOMContentLoaded', function() {
         if (etiq) etiq.innerText = texto;
     }
     setInterval(actualizarRelojSesion, 1000);
+    actualizarRelojSesion();
 
+    // --- 2. GESTIÓN DE MENÚ ACTIVO ---
     const links = document.querySelectorAll('.nav-link');
     window.activarMenu = function(vista) {
         links.forEach(link => link.classList.remove('active'));
-        // Truco para limpiar parÃ¡metros URL si los hubiera
         const vistaLimpia = vista.split('?')[0]; 
         const linkActivo = document.querySelector(`.nav-link[data-view="${vistaLimpia}"]`);
         if (linkActivo) linkActivo.classList.add('active');
     };
     
-    // Asignar eventos click
     links.forEach(link => {
         link.addEventListener('click', function() {
             links.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
         });
     });
-    
+
     // Activar inicio por defecto
     activarMenu('principal.php');
 });
+
+// Función para el dropdown
+function toggleMenuUser() {
+    document.getElementById('dropdown-user').classList.toggle('show');
+}
 </script>

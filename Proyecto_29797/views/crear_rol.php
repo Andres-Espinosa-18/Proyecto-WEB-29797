@@ -1,169 +1,105 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-require_once '../server/db.php';
-
-$user_id = $_SESSION['id_usuario'] ?? 0;
-
-function tienePermisoRol($conn, $user_id, $id_menu) {
-    if ($user_id == 0) return false;
-    $sql = "SELECT COUNT(*) as total FROM permisos_rol pr
-            JOIN usuario_roles ur ON pr.id_rol = ur.id_rol
-            WHERE ur.id_usuario = $user_id AND pr.id_menu = $id_menu";
-    $res = $conn->query($sql);
-    return ($res->fetch_assoc()['total'] > 0);
-}
+// CorrecciÛn de caracteres raros ()
+header('Content-Type: text/html; charset=UTF-8');
 ?>
-
 <div class="contenedor">
-    <h2>Gesti√≥n de Roles</h2>
-    <div style="display: flex; gap: 5px;">
-        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
-               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 100%; outline: none; transition: border 0.3s;"
-               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
+    <div class="header-complex">
         
-        <button onclick="ejecutarBusqueda('rol')" 
-                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
-                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
-            Buscar
-        </button>
-        
-        <button onclick="cargarVista('crear_rol.php')" 
-                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
-                title="Limpiar b˙squeda">
-            Limpiar
-        </button>
-    </div>
-	       <div>
-            <?php if(tienePermisoRol($conn, $user_id, 13)): ?>
-                <button onclick="cargarVista('roles_crear.php')" class="btn-success">+ Nuevo Rol</button>
-            <?php endif; ?>
-        </div>
-    <div class="tabla-controles">
- 
+        <div class="header-left">
+            <h2>Gesti&oacute;n de Roles</h2>
+            
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div class="search-bar-advanced no-print">
+                    <select id="criterioRol">
+                        <option value="general">Todo</option>
+                        <option value="nombre">Nombre</option>
+                        <option value="descripcion">Descripci&oacute;n</option>
+                    </select>
+                    
+                    <input type="text" id="terminoRol" placeholder="Buscar..." 
+                           onkeyup="if(event.key === 'Enter') buscarRoles(1)">
+                    
+                    <button class="btn-change" onclick="buscarRoles(1)">&#128269;</button>
 
-        <div>
-            <label>Mostrar: </label>
-            <select id="selectorCantidadRoles" onchange="cambiarCantidadRoles()">
-                <option value="5">5</option>
-                <option value="10" selected>10</option>
-                <option value="20">20</option>
-                <option value="-1">Todos</option>
-            </select>
-            <span id="infoRegistrosRoles" style="font-size: 0.9em; margin-left: 10px; color: #666;"></span>
+                    <select id="limiteRoles" onchange="buscarRoles(1)" 
+                            style="margin-left: 20px; border: 1px solid #ccc; border-radius: 4px; width:auto; font-weight:bold; cursor:pointer; padding: 5px;">
+                        <option value="5">Ver 5</option>
+                        <option value="10" selected>Ver 10</option>
+                        <option value="20">Ver 20</option>
+                    </select>
+                </div>
+            </div>
         </div>
+
+        <div class="header-right no-print">
+            <div class="btn-group-top">
+                <button class="btn-success" onclick="abrirModal('roles_crear.php')">&#10010; Nuevo Rol</button>
+                <button class="btn-change" onclick="window.print()">&#128462; PDF</button>
+            </div>
+        </div>
+
     </div>
 
-    <table class="tabla-gestion" id="tablaRoles">
+    <table class="tabla-gestion" id="tablaRolesResultados">
         <thead>
             <tr>
-                <th>ID</th>
+                <th style="width:50px;">ID</th>
                 <th>Nombre del Rol</th>
-                <th>Descripci√≥n</th>
-                <th>Acciones</th>
+                <th>Descripci&oacute;n</th>
+                <th class="acciones-col no-print">Acciones</th>
             </tr>
         </thead>
-        <tbody>
-            <?php
-            $res = $conn->query("SELECT * FROM roles ORDER BY id_rol ASC");
-            while($r = $res->fetch_assoc()):
-            ?>
-            <tr>
-                <td><?php echo $r['id_rol']; ?></td>
-                <td><strong><?php echo htmlspecialchars($r['nombre_rol']); ?></strong></td>
-                <td><?php echo htmlspecialchars($r['descripcion']); ?></td>
-                <td>
-                    <?php if(tienePermisoRol($conn, $user_id, 14)): ?>
-                        <button title="Editar" class="btn-change" onclick="cargarVista('roles_actualizar.php?id=<?php echo $r['id_rol']; ?>')">‚úèÔ∏è Editar</button>
-                    <?php endif; ?>
-
-                    <?php if(tienePermisoRol($conn, $user_id, 15)): ?>
-                        <?php if ($r['id_rol'] !=1 && $r['id_rol'] !=0):  ?>
-                            <button title="Eliminar" class="btn-danger" onclick="eliminarFila(<?php echo $r['id_rol']; ?>, 'rol')">üóëÔ∏è Eliminar</button>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <?php endwhile; ?>
+        <tbody id="tbody-roles">
+            <tr><td colspan="4" style="text-align:center;">Cargando roles...</td></tr>
         </tbody>
     </table>
-
-    <div id="paginacionRoles" class="paginacion-container"></div>
+    
+    <div id="paginacionRoles" class="no-print" style="margin-top:10px; text-align:center;"></div>
 </div>
 
 <script>
-    // Variables especÌficas para Roles (para no chocar con Usuarios)
-    let paginaActualRoles = 1;
-    let filasPorPaginaRoles = 10; 
+// --- CORRECCI”N DEL "CARGANDO..." ---
+// Al ser una vista din·mica, no usamos DOMContentLoaded. 
+// Ejecutamos la b˙squeda directamente con un pequeÒo retraso para asegurar que el HTML existe.
+setTimeout(function() {
+    buscarRoles(1);
+}, 100);
 
-    // Inicializar al cargar
-    // Nota: Como es SPA, a veces es mejor llamar la funciÛn directamente si el script se carga din·micamente
-    setTimeout(actualizarPaginacionRoles, 100); 
+function buscarRoles(pagina) {
+    // Si no se pasa p·gina, es la 1
+    if (!pagina) pagina = 1;
 
-    function cambiarCantidadRoles() {
-        const selector = document.getElementById('selectorCantidadRoles');
-        filasPorPaginaRoles = parseInt(selector.value);
-        paginaActualRoles = 1; 
-        actualizarPaginacionRoles();
-    }
+    const criterio = document.getElementById('criterioRol').value;
+    const termino = document.getElementById('terminoRol').value;
+    const limite = document.getElementById('limiteRoles').value;
 
-    function actualizarPaginacionRoles() {
-        const tabla = document.getElementById('tablaRoles');
-        if(!tabla) return; // Seguridad por si la tabla aun no existe
+    const d = new FormData();
+    d.append('tipo', 'rol_avanzado');
+    d.append('criterio', criterio);
+    d.append('termino', termino);
+    d.append('pagina', pagina);
+    d.append('limite', limite);
 
-        const cuerpo = tabla.querySelector('tbody');
-        const filas = Array.from(cuerpo.querySelectorAll('tr'));
-        const contenedorBotones = document.getElementById('paginacionRoles');
-        const info = document.getElementById('infoRegistrosRoles');
-        const totalFilas = filas.length;
+    fetch('server/busqueda_general.php', { method: 'POST', body: d })
+    .then(r => r.text())
+    .then(html => {
+        const tbody = document.querySelector('#tablaRolesResultados tbody');
+        if(tbody) tbody.innerHTML = html;
+    })
+    .catch(err => console.error("Error: " + err));
+}
 
-        let limite = (filasPorPaginaRoles === -1) ? totalFilas : filasPorPaginaRoles;
-        let totalPaginas = Math.ceil(totalFilas / limite);
-
-        // 1. Mostrar/Ocultar filas
-        filas.forEach((fila, index) => {
-            fila.style.display = 'none';
-            let inicio = (paginaActualRoles - 1) * limite;
-            let fin = inicio + limite;
-            if (index >= inicio && index < fin) {
-                fila.style.display = '';
-            }
-        });
-
-        // 2. Generar Botones
-        contenedorBotones.innerHTML = '';
-        
-        // BotÛn Anterior
-        if (totalPaginas > 1) {
-            let btnPrev = document.createElement('button');
-            btnPrev.innerText = '<<';
-            btnPrev.className = 'paginacion-btn';
-            btnPrev.onclick = () => { if(paginaActualRoles > 1) { paginaActualRoles--; actualizarPaginacionRoles(); }};
-            if(paginaActualRoles === 1) btnPrev.disabled = true;
-            contenedorBotones.appendChild(btnPrev);
-        }
-
-        // N˙meros
-        for (let i = 1; i <= totalPaginas; i++) {
-            let btn = document.createElement('button');
-            btn.innerText = i;
-            btn.className = 'paginacion-btn ' + (i === paginaActualRoles ? 'active' : '');
-            btn.onclick = () => {
-                paginaActualRoles = i;
-                actualizarPaginacionRoles();
-            };
-            contenedorBotones.appendChild(btn);
-        }
-
-        // BotÛn Siguiente
-        if (totalPaginas > 1) {
-            let btnNext = document.createElement('button');
-            btnNext.innerText = '>>';
-            btnNext.className = 'paginacion-btn';
-            btnNext.onclick = () => { if(paginaActualRoles < totalPaginas) { paginaActualRoles++; actualizarPaginacionRoles(); }};
-            if(paginaActualRoles === totalPaginas) btnNext.disabled = true;
-            contenedorBotones.appendChild(btnNext);
-        }
-
-   
-    }
+function eliminarRol(id) {
+    if(!confirm("Seguro de eliminar este rol")) return;
+    const d = new FormData(); 
+    d.append('id', id); 
+    d.append('tipo', 'rol');
+    
+    fetch('server/eliminar_general.php', { method:'POST', body:d })
+    .then(r => r.text())
+    .then(msg => {
+        alert(msg);
+        buscarRoles(1);
+    });
+}
 </script>

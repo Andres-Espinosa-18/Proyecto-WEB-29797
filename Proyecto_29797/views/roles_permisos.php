@@ -1,73 +1,97 @@
-<?php
-require_once '../server/db.php';
-$id_rol = $_GET['id_rol'] ?? '';
-?>
-
 <div class="contenedor">
-    <h2>Administrador de Permisos</h2>
-    
-    <select onchange="cargarVista('roles_permisos.php?id_rol=' + this.value)">
-        <option value="">-- Seleccionar Rol --</option>
-        <?php
-        $roles = $conn->query("SELECT * FROM roles WHERE id_rol != 1 AND id_rol != 0");
-        while($r = $roles->fetch_assoc()) {
-            $sel = ($id_rol == $r['id_rol']) ? 'selected' : '';
-            echo "<option value='{$r['id_rol']}' $sel>{$r['nombre_rol']}</option>";
-        }
-        ?>
-    </select>
+    <div class="header-complex">
+        <div class="header-left">
+            <h2>Administrar Permisos</h2>
+            <div class="search-bar-advanced no-print">
+                <select id="selectRolPermisos" onchange="cargarTablaPermisos(this.value)" 
+                        style="min-width: 200px; font-weight:bold;">
+                    <option value="0">-- Seleccione un Rol --</option>
+                    <?php
+                    require_once '../server/db.php';
+                    $roles = $conn->query("SELECT * FROM roles WHERE id_rol > 1");
+                    while($r = $roles->fetch_assoc()) {
+                        echo "<option value='{$r['id_rol']}'>{$r['nombre_rol']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
 
-    <?php if ($id_rol != ''): ?>
-    <form id="form-permisos">
-        <input type="hidden" name="id_rol" value="<?php echo $id_rol; ?>">
-        <table class="tabla-gestion">
-            <thead>
-                <tr><th>Menú</th><th>Permitir</th></tr>
-            </thead>
-            <tbody>
-                <?php
-                $actuales = [];
-                $res_p = $conn->query("SELECT id_menu FROM permisos_rol WHERE id_rol = $id_rol");
-                while($p = $res_p->fetch_assoc()) { $actuales[] = $p['id_menu']; }
+        <div class="header-right no-print">
+            <div class="btn-group-top">
+                <button class="btn-success" onclick="guardarPermisos()" id="btnGuardarPermisos" disabled>&#128190; Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
 
-                $menus = $conn->query("SELECT * FROM menus ORDER BY id_menu ASC");
-                while($m = $menus->fetch_assoc()):
-                ?>
-                <tr>
-                    <td><?php echo $m['nombre_texto']; ?></td>
-                    <td>
-                        <input type="checkbox" name="menu_ids[]" value="<?php echo $m['id_menu']; ?>" 
-                        <?php echo in_array($m['id_menu'], $actuales) ? 'checked' : ''; ?>>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-        <button type="submit" onclick="ejecutarGuardadoPermisos()" class="btn-success">Guardar Cambios</button>
-    </form>
-    <?php endif; ?>
+    <div style="margin-top: 15px;">
+        <form id="form-permisos">
+            <input type="hidden" name="id_rol" id="hidden_id_rol" value="0">
+            
+            <table class="tabla-gestion">
+                <thead>
+                    <tr>
+                        <th style="width: 50px; text-align:center;">ID</th>
+                        <th>Módulo / Menú</th>
+                        <th style="width: 100px; text-align:center;">Acceso</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-permisos">
+                    <tr><td colspan="3" style="text-align:center; padding:30px; color:#666;">
+                        &#11013; Seleccione un rol arriba para configurar.
+                    </td></tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
 </div>
 
 <script>
-// Definimos la función en el objeto window para que sea global y la SPA no la pierda
-window.ejecutarGuardadoPermisos = function() {
-    const form = document.getElementById('form-permisos');
-    const datos = new FormData(form);
+function cargarTablaPermisos(idRol) {
+    const btn = document.getElementById('btnGuardarPermisos');
+    const inputHidden = document.getElementById('hidden_id_rol');
+    const tbody = document.getElementById('tbody-permisos');
 
-    fetch('server/actualizar_permisos.php', {
-        method: 'POST',
-        body: datos
+    if(idRol == "0") {
+        btn.disabled = true;
+        btn.className = "btn-disabled";
+        tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:30px; color:#666;'>Seleccione un rol.</td></tr>";
+        return;
+    }
+
+    // Activamos interfaz
+    btn.disabled = false;
+    btn.className = "btn-success";
+    inputHidden.value = idRol;
+    tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Cargando permisos...</td></tr>";
+
+    // Pedimos la tabla al servidor (AJAX)
+    const d = new FormData();
+    d.append('id_rol', idRol);
+
+    fetch('server/obtener_permisos_tabla.php', { method: 'POST', body: d })
+    .then(r => r.text())
+    .then(html => {
+        tbody.innerHTML = html;
     })
-    .then(res => res.text())
+    .catch(err => alert("Error cargando tabla: " + err));
+}
+
+function guardarPermisos() {
+    if(!confirm("¿Desea guardar la configuración?")) return;
+
+    const form = document.getElementById('form-permisos');
+    const d = new FormData(form);
+
+    fetch('server/actualizar_permisos.php', { method: 'POST', body: d })
+    .then(r => r.text())
     .then(res => {
-        if(res.trim() === "OK_GUARDADO") {
-            alert("Permisos actualizados correctamente");
-            // Forzamos recarga del menú para ver cambios (opcional)
-            location.reload(); 
-        } else {
-            alert("Respuesta del servidor: " + res);
-        }
+        if(res.trim() === "OK") {
+            alert("Permisos actualizados correctamente.");
+            // Recargamos la tabla para confirmar visualmente (opcional)
+            cargarTablaPermisos(document.getElementById('selectRolPermisos').value);
+        } 
     })
-    .catch(err => alert("Error de conexión: " + err));
+    .catch(err => alert("Error de red: " + err));
 }
 </script>

@@ -1,53 +1,82 @@
-// JavaScript Document
-
-const soloTexto = /^[A-Za-zÁÉÍÓÚáéíóúüÜ ]*$/;
-const soloNum = /^[0-9]*$/;
-function validarSoloTexto(e) {
-	let tecla = e.key;
-	
-	if (!soloTexto.test(tecla) && tecla !=="Backspace") e.preventDefault();
-}
-function validarSoloNumero(e) {
-	let tecla = e.key;
-	
-	if (!soloNum.test(tecla) && tecla !=="Backspace") e.preventDefault();
-}
-
-function productoContenido() {
-	document.getElementById("prodID").value = "id1";
-	document.getElementById("prodDescripcion").value = "descripcion";
-	document.getElementById("prodPresentacion").value = "unidades";
-}
-
-function validarCed() {
-    let cedulaInput = document.getElementById("cedula").value;
-	let cedula = cedulaInput.split('').map(Number);
-    let suma = 0;
-    let ultimoDigito = cedula[9]; 
-
-    for (let pos = 0; pos < 9; pos++) {
-        let digito = cedula[pos];
-        if (pos % 2 == 0) {
-            digito *= 2;
-            if (digito > 9) {
-                digito -= 9;
-            }
+// 1. Validar Cédula (Módulo 10) - Se ejecuta en onblur
+function validarCed(input) {
+    let cedula = input.value.trim();
+    if (cedula.length !== 10 || isNaN(cedula)) {
+        input.setCustomValidity("Cédula inválida (10 dígitos)");
+        input.reportValidity();
+        return false;
+    }
+    // Algoritmo Ecuador
+    let total = 0;
+    let longitud = cedula.length;
+    let longcheck = longitud - 1;
+    for(let i = 0; i < longcheck; i++){
+        if (i%2 === 0) {
+            let aux = cedula.charAt(i) * 2;
+            if (aux > 9) aux -= 9;
+            total += aux;
+        } else {
+            total += parseInt(cedula.charAt(i)); 
         }
-		suma += digito;
     }
+    total = total % 10 ? 10 - total % 10 : 0;
 
-    let verificador = (10 - (suma % 10))%10;
- 
-    if (verificador === ultimoDigito) {
-        document.getElementById("valced").innerHTML = "";
+    if (cedula.charAt(longitud-1) == total) {
+        input.setCustomValidity("");
+        return true;
     } else {
-        document.getElementById("valced").innerHTML = "* Cedula incorrecta";;
+        input.setCustomValidity("Cédula Incorrecta");
+        input.reportValidity();
+        return false;
     }
 }
 
-function programa(e) {
+// 2. Calcular Edad y Validar 18+
+function calcularEdad(inputFecha, idDisplay) {
+    const fechaNac = new Date(inputFecha.value);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const m = hoy.getMonth() - fechaNac.getMonth();
+    
+    if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) {
+        edad--;
+    }
 
+    // Mostrar edad
+    const display = document.getElementById(idDisplay);
+    if(display) display.innerText = edad + " años";
+
+    if(edad < 18) {
+        alert("El usuario debe ser mayor de 18 años.");
+        inputFecha.value = "";
+        if(display) display.innerText = "";
+    }
 }
 
-document.getElementById("form1").addEventListener('submit', programa);
+// 8. Sistema de Modales
+function abrirModal(url) {
+    const modal = document.getElementById('modal-container');
+    const content = document.getElementById('modal-body');
+    
+    content.innerHTML = "<p style='text-align:center; padding:20px;'>Cargando...</p>";
+    modal.style.display = 'flex';
 
+    fetch('views/' + url)
+    .then(r => r.text())
+    .then(html => {
+        content.innerHTML = html;
+        // Re-ejecutar scripts dentro del modal
+        const scripts = content.querySelectorAll("script");
+        scripts.forEach(s => eval(s.textContent));
+    });
+}
+
+function cerrarModal() {
+    document.getElementById('modal-container').style.display = 'none';
+}
+
+// Dropdown Menu
+function toggleMenuUser() {
+    const m = document.getElementById('dropdown-user');
+    m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+}

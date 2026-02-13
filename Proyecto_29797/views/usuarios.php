@@ -1,199 +1,178 @@
 <?php
-// 1. Incluimos la base de datos (ruta relativa desde /views hacia /server)
 require_once '../server/db.php';
 
-// Iniciamos sesi√≥n si no est√° iniciada (necesaria para el user_id)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Filtros
+$estado = $_GET['estado'] ?? 'todos'; 
+$where = "WHERE 1=1";
+if($estado == 'activos') $where .= " AND u.estado = 1";
+if($estado == 'inactivos') $where .= " AND u.estado = 0";
 
-$user_id = $_SESSION['id_usuario'] ?? 0;
-
-// 2. DEFINIMOS LA FUNCI√ìN (Fundamental para que no d√© error)
-function tienePermiso($conn, $user_id, $id_menu) {
-    // Si no hay usuario, no tiene permiso
-    if ($user_id == 0) return false;
-    
-    $sql = "SELECT COUNT(*) as total FROM permisos_rol pr
-            JOIN usuario_roles ur ON pr.id_rol = ur.id_rol
-            WHERE ur.id_usuario = $user_id AND pr.id_menu = $id_menu";
-            
-    $res = $conn->query($sql);
-    if ($res) {
-        $row = $res->fetch_assoc();
-        return $row['total'] > 0;
-    }
-    return false;
-}
+$sql = "SELECT u.*, r.nombre_rol, r.id_rol FROM usuarios u 
+        LEFT JOIN usuario_roles ur ON u.id_usuario = ur.id_usuario 
+        LEFT JOIN roles r ON ur.id_rol = r.id_rol
+        $where 
+        ORDER BY u.apellido ASC";
 ?>
 
-<div class="contenedor" >
-    <h2>Gesti√≥n de Usuarios</h2>
-    <div style="display: flex; gap: 5px;">
-        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
-               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 250px; outline: none; transition: border 0.3s;"
-               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
-        
-        <button onclick="ejecutarBusqueda('usuario')" 
-                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
-                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
-            Buscar
-        </button>
-        
-        <button onclick="cargarVista('usuarios.php')" 
-                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
-                title="Limpiar b˙squeda">
-            Limpiar
-        </button>
+<div class="contenedor">
+    <div class="header-complex">
+        <div class="header-left">
+            <h2>Gesti&oacute;n de Usuarios</h2>
+            <div class="search-bar-advanced no-print">
+                <select id="criterioBusqueda">
+                    <option value="general">Todo</option>
+                    <option value="cedula">C&eacute;dula</option>
+                    <option value="username">Usuario</option>
+                    <option value="nombre">Nombre</option>
+                </select>
+                <input type="text" id="terminoBusqueda" placeholder="Buscar..." onkeyup="if(event.key === 'Enter') buscarUsuarios()">
+                <button class="btn-change" onclick="buscarUsuarios()">&#128269;</button>
+				
+				<select id="limiteRegistros" onchange="buscarUsuarios(1)" 
+					style="margin-left: 20px; border: 1px solid #ccc; border-radius: 4px; width:auto; font-weight:bold; cursor:pointer; padding: 5px;">
+				<option value="5">Ver 5</option>
+				<option value="10" selected>Ver 10</option>
+				<option value="20">Ver 20</option>
+				<option value="50">Ver 50</option>
+			</select>
+            </div>
+        </div>
+
+					<div class="header-right no-print">
+				<div class="btn-group-top">
+					<button class="btn-success" onclick="abrirModal('usuarios_crear.php')">+ Nuevo</button>
+					<button class="btn-change" onclick="window.print()">&#128462; PDF</button>
+				</div>
+
+				<div class="filtros-container" style="margin-top: 10px;">
+					<label>Estado:</label>
+					<select id="filtroEstado" onchange="buscarUsuarios(1)">
+						<option value="todos">Todos</option>
+						<option value="activos">Activos</option>
+						<option value="inactivos">Inactivos</option>
+					</select>
+				</div>
+			</div>
     </div>
-    
-    <?php if(tienePermiso($conn, $user_id, 10)): ?>
-        <button onclick="cargarVista('usuarios_crear.php')" class="btn-success">+ Nuevo Usuario</button>
-    <?php endif; ?>
 
-   <div class="tabla-controles">
-    <div>
-        <label style="color: #4a5568; font-weight: bold;">Mostrar: </label>
-        <select id="selectorCantidad" onchange="cambiarCantidad()">
-            <option value="5">5 registros</option>
-            <option value="10" selected>10 registros</option>
-            <option value="20">20 registros</option>
-            <option value="-1">Todos</option>
-        </select>
-    </div>
-    <div style="color: #718096; font-size: 0.9em;" id="infoRegistros"></div>
-</div>
-
-<table class="tabla-gestion" id="tablaUsuarios">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Nombre del Usuario</th>
-			<th>Cedula</th>
-            <th>Email</th>
-			<th>Direccion</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        $res = $conn->query("SELECT * FROM usuarios");
-        if ($res):
-            while($u = $res->fetch_assoc()):
-        ?>
-        <tr>
-            <td><?php echo htmlspecialchars($u['username']); ?></td>
-            <td><?php echo htmlspecialchars($u['nombre_real']); ?></td>
-			<td><?php echo htmlspecialchars($u['cedula']); ?></td>
-            <td><?php echo htmlspecialchars($u['email']); ?></td>
-			<td><?php echo htmlspecialchars($u['direccion']); ?></td>
-            <td>
-                <?php if(tienePermiso($conn, $user_id, 11)): ?>
-                    <button class="btn-change" onclick="cargarVista('usuarios_actualizar.php?id=<?php echo $u['id_usuario']; ?>')">‚úèÔ∏è Editar</button>
-                <?php endif; ?>
-
-                <?php if(tienePermiso($conn, $user_id, 12)): ?>
-                    
-                    <?php if($u['estado'] == 0): // Corregido a doble igual ?>
-                        <button class="btn-change" onclick="ActivarFila(<?php echo $u['id_usuario']; ?>, 'usuario')"> &#128260 ACTIVAR</button>
+    <table class="tabla-gestion" id="tablaUsuariosResultados">
+        <thead>
+            <tr>
+                <th>Apellidos y Nombres</th>
+                <th>C&eacute;dula</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th style="text-align:center;">Estado</th>
+                <th class="acciones-col no-print">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $res = $conn->query($sql);
+            if ($res && $res->num_rows > 0):
+                while($row = $res->fetch_assoc()): 
+                    $es_admin = ($row['id_rol'] == 1);
+            ?>
+            <tr>
+                <td style="text-align:left;"><?php echo htmlspecialchars($row['apellido'] . ' ' . $row['nombre']); ?></td>
+                <td><?php echo htmlspecialchars($row['cedula']); ?></td>
+                <td><?php echo htmlspecialchars($row['username']); ?></td>
+                <td><?php echo htmlspecialchars($row['nombre_rol']); ?></td>
+                
+                <td style="text-align:center;">
+                    <?php if($row['estado']==1): ?>
+                        <span style="color:#27ae60; font-weight:bold;">Activo</span>
                     <?php else: ?>
-                        <?php if($u['id_usuario'] != 1): ?>
-                           <button class="btn-danger" onclick="eliminarFila(<?php echo $u['id_usuario']; ?>, 'usuario')">üóëÔ∏è  ELIMINAR</button>
+                        <span style="color:#c0392b; font-weight:bold;">Inactivo</span>
+                    <?php endif; ?>
+                </td>
+                
+                <td class="acciones-col no-print">
+                    <button class="btn-change" onclick="abrirModal('usuarios_actualizar.php?id=<?php echo $row['id_usuario']; ?>')">
+                        &#9998; Editar
+                    </button>
+
+                    <?php if($es_admin): ?>
+                        <button class="btn-disabled" onclick="alert('No puedes modificar al Administrador')">&#10006; Eliminar</button>
+                    <?php else: ?>
+                        <?php if($row['estado']==1): ?>
+                            <button class="btn-danger" onclick="cambiarEstadoUsuario(<?php echo $row['id_usuario']; ?>, 0)">
+                                &#10006; Eliminar
+                            </button>
+                        <?php else: ?>
+                            <button class="btn-success" onclick="cambiarEstadoUsuario(<?php echo $row['id_usuario']; ?>, 1)">
+                                &#10004; Activar
+                            </button>
                         <?php endif; ?>
                     <?php endif; ?>
-
-                <?php endif; ?>
-            </td>
-        </tr>
-        <?php 
-            endwhile; 
-        endif;
-        ?>
-    </tbody>
-</table>
+                </td>
+            </tr>
+            <?php endwhile; 
+            else: ?>
+                <tr><td colspan="6">No hay usuarios registrados.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
 
 <script>
-    // Variables Globales
-    let paginaActual = 1;
-    let filasPorPagina = 10; // Valor por defecto
+// La funciÛn ahora acepta el par·metro 'pagina'
+function buscarUsuarios(pagina = 1) {
+    const criterio = document.getElementById('criterioBusqueda').value;
+    const termino = document.getElementById('terminoBusqueda').value;
+    
+    // Obtenemos el lÌmite del select nuevo (o ponemos 10 por defecto si no existe)
+    let limiteSelect = document.getElementById('limiteRegistros');
+    const limite = limiteSelect ? limiteSelect.value : 10;
+    
+    // Filtro de estado (del select de la derecha)
+    // Aseg˙rate de que tu select de estado tenga id="filtroEstado" o busca el querySelector
+    // Si usas el cÛdigo anterior, puede que sea 'select-bottom select'
+    let selectEstado = document.querySelector('.select-bottom select');
+    const estado = selectEstado ? selectEstado.value : 'todos';
 
-    // FunciÛn principal que se ejecuta al cargar
-    document.addEventListener('DOMContentLoaded', function() {
-        actualizarPaginacion();
-    });
+    const d = new FormData();
+    d.append('tipo', 'usuario_avanzado');
+    d.append('criterio', criterio);
+    d.append('termino', termino);
+    
+    // Enviamos los datos de paginaciÛn
+    d.append('pagina', pagina);
+    d.append('limite', limite);
+    d.append('estado', estado);
 
-    // FunciÛn que se ejecuta cuando cambias el select
-    function cambiarCantidad() {
-        const selector = document.getElementById('selectorCantidad');
-        const valor = parseInt(selector.value);
-        
-        filasPorPagina = valor;
-        paginaActual = 1; // Volver siempre a la p·gina 1 al cambiar el filtro
-        actualizarPaginacion();
-    }
+    fetch('server/busqueda_general.php', { method: 'POST', body: d })
+    .then(r => r.text())
+    .then(html => {
+        // Simple y directo: Pegamos el HTML (filas + botones) en la tabla
+        document.querySelector('#tablaUsuariosResultados tbody').innerHTML = html;
+    })
+    .catch(err => alert("Error cargando: " + err));
+}
 
-    // LÛgica de PaginaciÛn
-    function actualizarPaginacion() {
-        const tabla = document.getElementById('tablaUsuarios');
-        const cuerpo = tabla.querySelector('tbody');
-        const filas = Array.from(cuerpo.querySelectorAll('tr'));
-        const contenedorBotones = document.getElementById('paginacion');
-        const info = document.getElementById('infoRegistros');
-        const totalFilas = filas.length;
+// Cargar al inicio
+document.addEventListener("DOMContentLoaded", function() {
+    buscarUsuarios(1);
+});
 
-        // Si se eligiÛ "Todos" (-1)
-        let limite = (filasPorPagina === -1) ? totalFilas : filasPorPagina;
-        let totalPaginas = Math.ceil(totalFilas / limite);
-
-        // 1. Mostrar/Ocultar filas
-        filas.forEach((fila, index) => {
-            fila.style.display = 'none'; // Ocultar todo primero
-            
-            // Calcular rango visible
-            let inicio = (paginaActual - 1) * limite;
-            let fin = inicio + limite;
-
-            if (index >= inicio && index < fin) {
-                fila.style.display = ''; // Mostrar si est· en rango
-            }
-        });
-
-        // 2. Generar Botones
-        contenedorBotones.innerHTML = '';
-        
-        // BotÛn "Anterior"
-        if (totalPaginas > 1) {
-            let btnPrev = document.createElement('button');
-            btnPrev.innerText = '<<';
-            btnPrev.className = 'paginacion-btn';
-            btnPrev.onclick = () => { if(paginaActual > 1) { paginaActual--; actualizarPaginacion(); }};
-            if(paginaActual === 1) btnPrev.disabled = true;
-            contenedorBotones.appendChild(btnPrev);
-        }
-
-        // N˙meros
-        for (let i = 1; i <= totalPaginas; i++) {
-            let btn = document.createElement('button');
-            btn.innerText = i;
-            btn.className = 'paginacion-btn ' + (i === paginaActual ? 'active' : '');
-            btn.onclick = () => {
-                paginaActual = i;
-                actualizarPaginacion();
-            };
-            contenedorBotones.appendChild(btn);
-        }
-
-        // BotÛn "Siguiente"
-        if (totalPaginas > 1) {
-            let btnNext = document.createElement('button');
-            btnNext.innerText = '>>';
-            btnNext.className = 'paginacion-btn';
-            btnNext.onclick = () => { if(paginaActual < totalPaginas) { paginaActual++; actualizarPaginacion(); }};
-            if(paginaActual === totalPaginas) btnNext.disabled = true;
-            contenedorBotones.appendChild(btnNext);
-        }
-
-        // Texto informativo
-    }
+// --- FUNCI”N ACTUALIZADA PARA USAR TUS ARCHIVOS GENERALES ---
+function cambiarEstadoUsuario(id, nuevoEstado) {
+    let accion = (nuevoEstado === 1) ? "ACTIVAR" : "INACTIVAR";
+    if(!confirm("Seguro de " + accion + " este usuario")) return;
+    
+    // Decidimos a quÈ archivo llamar
+    let archivo = (nuevoEstado === 1) ? 'server/activar_general.php' : 'server/eliminar_general.php';
+    
+    const d = new FormData(); 
+    d.append('id', id); 
+    d.append('tipo', 'usuario'); // Importante para tu archivo general
+    
+    fetch(archivo, { method:'POST', body:d })
+    .then(r => r.text())
+    .then(msg => {
+        // alert(msg); // Opcional
+        cargarVista('usuarios.php');
+    })
+    .catch(err => alert("Error: " + err));
+}
 </script>
-</div>

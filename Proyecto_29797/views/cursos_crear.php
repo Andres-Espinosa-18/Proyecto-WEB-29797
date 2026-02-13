@@ -1,47 +1,37 @@
-<div class="contenedor">
-    <h3>Registrar Nuevo Curso</h3>
-    <form id="form-curso-crear">
+<div style="padding:10px;">
+    <h3 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">Nuevo Curso</h3>
+    <form id="form-crear-curso">
         <div class="form-group">
             <label>Nombre del Curso:</label>
-            <input type="text" name="nombre_curso" required placeholder="Ej: Programación Avanzada">
+            <input type="text" name="nombre_curso" class="form-control" required>
         </div>
-
         <div class="form-group">
             <label>Descripción:</label>
-            <input type="text" name="descripcion" placeholder="Breve descripción del curso">
+            <textarea name="descripcion" class="form-control" rows="2"></textarea>
         </div>
-
-        <div class="form-group" style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <label>Fecha de Inicio:</label>
-                <input type="date" name="fecha_inicio" required>
+        <div style="display:flex; gap:10px;">
+            <div class="form-group" style="flex:1;">
+                <label>Fecha Inicio:</label>
+                <input type="date" name="fecha_inicio" class="form-control" min="2026-02-13" max="2026-12-13" required>
             </div>
-            <div style="flex: 1;">
+            <div class="form-group" style="flex:1;">
                 <label>Duración (Horas):</label>
-                <input type="text" name="duracion" placeholder="Ej: 40" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input type="number" name="duracion" class="form-control" required>
             </div>
         </div>
-
-        <div style="margin-top:20px;">
-            <button type="button" onclick="guardarCurso()" class="btn-success">Guardar Curso</button>
-            <button type="button" onclick="cargarVista('cursos.php')" class="btn-back">Cancelar</button>
+        <div style="text-align:right; margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+            <button type="button" class="btn-danger" onclick="cerrarModal()">Cancelar</button>
+            <button type="button" class="btn-success" id="btnGuardarCurso">Guardar</button>
         </div>
     </form>
 </div>
-
 <script>
-window.guardarCurso = function() {
-    const form = document.getElementById('form-curso-crear');
-    if(!form.checkValidity()) { alert("Completa los campos obligatorios"); return; }
-
-    const datos = new FormData(form);
-    datos.append('accion', 'crear'); // Identificador para el backend
-
-    fetch('server/cursos_acciones.php', { method: 'POST', body: datos })
-    .then(res => res.text())
-    .then(data => {
-        alert(data);
-        cargarVista('cursos.php');
-    });
-}
+(function() {
+    document.getElementById('btnGuardarCurso').onclick = function() {
+        const f = document.getElementById('form-crear-curso');
+        if(!f.checkValidity()){ f.reportValidity(); return; }
+        fetch('server/cursos_guardar.php', { method:'POST', body:new FormData(f) })
+        .then(r=>r.text()).then(m=>{ alert(m); cerrarModal(); buscarCursos(1); });
+    };
+})();
 </script>

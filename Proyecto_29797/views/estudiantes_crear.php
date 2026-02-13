@@ -1,78 +1,41 @@
-<div class="contenedor">
-    <h3>Registrar Nuevo Estudiante</h3>
-    <form id="form-est-crear">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            
-            <div>
-                <label>Nombre Completo:</label>
-                <input type="text" name="nombre" class="form-control" required>
-            </div>
-            
-            <div>
-                <label>Cédula:</label>
-                <input type="text" name="cedula" class="form-control" required>
-            </div>
-
-            <div>
-                <label>Usuario para Login:</label>
-                <input type="text" name="usuario" class="form-control" required>
-            </div>
-
-            <div>
-                <label>Contraseña:</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-
-            <div>
-                <label>Carrera:</label>
-                <input type="text" name="carrera" class="form-control">
-            </div>
-
-            <div>
-                <label>Fecha Nacimiento:</label>
-                <input type="date" name="fecha_nacimiento" class="form-control">
-            </div>
-
-            <div>
-                <label>Correo Electrónico:</label>
-                <input type="email" name="correo" class="form-control">
-            </div>
-
-            <div>
-                <label>Teléfono:</label>
-                <input type="text" name="telefono" class="form-control">
-            </div>
-
-            <div style="grid-column: 1 / -1;">
-                <label>Dirección:</label>
-                <input type="text" name="direccion" class="form-control">
-            </div>
-        </div>
-
-        <div style="margin-top:20px;">
-            <button type="button" onclick="crearEstudiante()" class="btn-success">Guardar Estudiante</button>
-            <button type="button" onclick="cargarVista('estudiantes.php')" class="btn-back">Cancelar</button>
-        </div>
-    </form>
+<div class="header-complex">
+    <div class="header-left">
+        <h2 style="color: var(--primary); font-size: 1.5rem;">Registrar Nuevo Estudiante</h2>
+    </div>
 </div>
 
-<style>
-    .form-control { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
-</style>
+<form id="formCrearEstudiante" onsubmit="event.preventDefault(); guardarEstudiante();">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-group">
+            <label>Nombres:</label>
+            <input type="text" name="nombre" required class="form-control" style="width:100%; padding:8px;">
+        </div>
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" name="apellido" class="form-control" style="width:100%; padding:8px;">
+        </div>
 
-<script>
-function crearEstudiante() {
-    const form = document.getElementById('form-est-crear');
-    if(!form.checkValidity()) { alert("Por favor llena los campos requeridos."); return; }
-    
-    const datos = new FormData(form);
-    datos.append('accion', 'crear');
+        <div class="form-group">
+            <label>Cédula:</label>
+            <input type="text" name="cedula" required class="form-control" style="width:100%; padding:8px;">
+        </div>
+        <div class="form-group">
+            <label>Correo:</label>
+            <input type="email" name="correo" class="form-control" style="width:100%; padding:8px;">
+        </div>
 
-    fetch('server/estudiantes_acciones.php', { method: 'POST', body: datos })
-    .then(r => r.text())
-    .then(msg => {
-        alert(msg);
-        if(msg.includes('correctamente')) cargarVista('estudiantes.php');
-    });
-}
-</script>
+        <div class="form-group">
+            <label>Usuario (Login):</label>
+            <input type="text" name="usuario" required class="form-control" style="width:100%; padding:8px;">
+        </div>
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" name="clave" required class="form-control" style="width:100%; padding:8px;">
+        </div>
+    </div>
+
+    <div style="margin-top: 20px; text-align: right; border-top: 1px solid #eee; padding-top: 15px;">
+        <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn btn-success">Guardar Estudiante</button>
+    </div>
+</form>

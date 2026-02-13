@@ -1,51 +1,67 @@
 <?php
 require_once 'db.php';
 require_once 'funciones_auditoria.php';
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = intval($_POST['id_usuario']);
-    $nombre = trim($_POST['nombre_real']);
-	$fecha = trim($_POST['fecha']);
-	$cedula = trim($_POST['cedula']);	
-	$email = trim($_POST['email']);
-	$direccion = trim($_POST['direccion']);
-	$id_rol = trim($_POST['id_rol']);
-	$pass = $_POST['password'];
-	$pass_hash = password_hash($pass, PASSWORD_BCRYPT);
+    
+    $id = isset($_POST['id_usuario']) ? intval($_POST['id_usuario']) : 0;
+    $nombre = trim($_POST['nombre']); // Obligatorio
+    $apellido = trim($_POST['apellido']); // Opcional (puede estar vacío)
+    $cedula = trim($_POST['cedula']);
+    $pass = $_POST['password'];
+    $id_rol = isset($_POST['id_rol']) ? intval($_POST['id_rol']) : 0;
 
-    if ($id > 0 && !empty($nombre) && $id_rol >= 0 ) {
-        
-        $conn->begin_transaction();
+    // 1. Validación: Nombre obligatorio
+    if (empty($nombre)) { 
+        die("Error: El nombre es obligatorio."); 
+    }
 
-        try {
-            // 1. Actualizar datos básicos
-            $stmt = $conn->prepare("UPDATE usuarios SET password = ?, nombre_real = ?, fecha_nacimiento = ?, cedula = ?, email = ?, direccion = ? WHERE id_usuario = ?");
-            $stmt->bind_param("ssssssi", $pass_hash,$nombre,$fecha,$cedula,$email, $direccion ,$id);
-            $stmt->execute();
-			
-			// 2. Actualizar el Rol (Borramos el anterior y ponemos el nuevo)
-            $conn->query("DELETE FROM usuario_roles WHERE id_usuario = $id");
-            $stmt_rol = $conn->prepare("INSERT INTO usuario_roles (id_usuario, id_rol) VALUES (?, ?)");
-            $stmt_rol->bind_param("ii", $id, $id_rol);
-            $stmt_rol->execute();
-
-            // 3. Obtener nombre del rol para la auditoría
-            $res_n = $conn->query("SELECT nombre_rol FROM roles WHERE id_rol = $id_rol");
-            $n_rol = $res_n->fetch_assoc()['nombre_rol'];
-
-            // 4. Auditoría
-            registrarEvento($conn, "Actualizó al usuario ID $id");
-
-            $conn->commit();
-            echo "Usuario y Rol actualizados con éxito.";
-
-
-        } catch (Exception $e) {
-            $conn->rollback();
-            echo "Error al actualizar: " . $e->getMessage();
+    // 2. Validación: Cédula Única (Si se escribió una cédula)
+    if (!empty($cedula)) {
+        // Buscamos si existe OTRO usuario con esa misma cédula
+        $sql_check = "SELECT id_usuario FROM usuarios WHERE cedula = '$cedula' AND id_usuario != $id";
+        $check = $conn->query($sql_check);
+        if ($check->num_rows > 0) {
+            die("Error: La cédula '$cedula' ya pertenece a otro usuario.");
         }
+    }
+
+    // 3. Preparar SQL Dinámico
+    // Nota: Actualizamos apellido incluso si está vacío
+    $sql = "UPDATE usuarios SET nombre=?, apellido=?, cedula=?";
+    $types = "sss";
+    $params = array($nombre, $apellido, $cedula);
+
+    // Solo actualizamos contraseña si el usuario escribió algo
+    if (!empty($pass)) {
+        $hash = password_hash($pass, PASSWORD_BCRYPT);
+        $sql .= ", password=?";
+        $types .= "s";
+        $params[] = $hash;
+    }
+
+    $sql .= " WHERE id_usuario=?";
+    $types .= "i";
+    $params[] = $id;
+
+    // Ejecutar
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+
+    if ($stmt->execute()) {
+        // Actualizar Rol si se envió
+        if ($id_rol > 0) {
+            $conn->query("DELETE FROM usuario_roles WHERE id_usuario = $id");
+            $conn->query("INSERT INTO usuario_roles (id_usuario, id_rol) VALUES ($id, $id_rol)");
+        }
+        
+        if(function_exists('registrarEvento')) {
+            registrarEvento($conn, "Editó usuario ID: $id");
+        }
+        echo "Usuario actualizado correctamente.";
     } else {
-        echo "Error: Datos incompletos.";
+        echo "Error SQL: " . $conn->error;
     }
 }
 ?>

@@ -1,0 +1,1 @@
+<?php echo "<tr><td colspan='6'>¡EL SERVIDOR FUNCIONA!</td></tr>"; ?>

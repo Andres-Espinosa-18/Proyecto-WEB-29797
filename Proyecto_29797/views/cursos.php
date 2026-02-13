@@ -1,178 +1,108 @@
-<?php
-// 1. Incluimos DB y Sesi√≥n
-require_once '../server/db.php';
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-$user_id = $_SESSION['id_usuario'] ?? 0;
-
-
-function tienePermisoCurso($conn, $user_id, $id_menu) {
-    if ($user_id == 0) return false;
-    $sql = "SELECT COUNT(*) as total FROM permisos_rol pr
-            JOIN usuario_roles ur ON pr.id_rol = ur.id_rol
-            WHERE ur.id_usuario = $user_id AND pr.id_menu = $id_menu";
-    $res = $conn->query($sql);
-    return ($res->fetch_assoc()['total'] > 0);
-}
-
-// NOTA: Asume que el ID de men√∫ para cursos es, por ejemplo, 20. 
-// Ajusta los n√∫meros (20, 21, 22) seg√∫n tu tabla de men√∫s.
-?>
-
 <div class="contenedor">
-    <h2>Gesti√≥n de Cursos</h2>
+    <div class="header-complex">
+        
+        <div class="header-left">
+            <h2>Gesti&oacute;n de Cursos</h2>
+            
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div class="search-bar-advanced no-print">
+                    <select id="criterioCurso">
+                        <option value="nombre">Nombre Curso</option>
+                        <option value="descripcion">Descripci&oacute;n</option>
+                    </select>
+                    
+                    <input type="text" id="terminoCurso" placeholder="Buscar curso..." 
+                           onkeyup="if(event.key === 'Enter') buscarCursos(1)">
+                    
+                    <button class="btn-change" onclick="buscarCursos(1)">&#128269;</button>
 
-	    <div style="display: flex; gap: 5px;">
-        <input type="text" id="inputBusqueda" placeholder="Buscar por username..." 
-               style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; width: 250px; outline: none; transition: border 0.3s;"
-               onfocus="this.style.borderColor='#3182ce'" onblur="this.style.borderColor='#cbd5e0'">
-        
-        <button onclick="ejecutarBusqueda('curso')" 
-                style="background-color: #3182ce; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s;"
-                onmouseover="this.style.backgroundColor='#2b6cb0'" onmouseout="this.style.backgroundColor='#3182ce'">
-            Buscar
-        </button>
-        
-        <button onclick="cargarVista('cursos.php')" 
-                style="background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
-                title="Limpiar b˙squeda">
-            Limpiar
-        </button>
-    </div>
-	
-	<div>
-            <?php if(tienePermisoCurso($conn, $user_id, 17)): // Permiso Crear ?>
-                <button onclick="cargarVista('cursos_crear.php')" class="btn-success">+ Nuevo Curso</button>
-            <?php endif; ?>
+                    <select id="limiteCursos" onchange="buscarCursos(1)" 
+                            style="margin-left: 20px; border: 1px solid #ccc; border-radius: 4px; font-weight:bold; cursor:pointer; padding: 5px;">
+                        <option value="5">Ver 5</option>
+                        <option value="10" selected>Ver 10</option>
+                        <option value="20">Ver 20</option>
+                    </select>
+                </div>
+            </div>
         </div>
-    <div class="tabla-controles">
-        
 
-        <div>
-            <label style="color: #4a5568; font-weight: bold;">Mostrar: </label>
-            <select id="selectorCantidadCursos" onchange="cambiarCantidadCursos()">
-                <option value="5">5 registros</option>
-                <option value="10" selected>10 registros</option>
-                <option value="20">20 registros</option>
-                <option value="-1">Todos</option>
-            </select>
-            <span id="infoRegistrosCursos" style="color: #718096; font-size: 0.9em; margin-left: 10px;"></span>
+        <div class="header-right no-print">
+            <div class="btn-group-top">
+                <button class="btn-success" onclick="abrirModal('cursos_crear.php')">&#10010; Nuevo Curso</button>
+            </div>
         </div>
     </div>
 
-    <table class="tabla-gestion" id="tablaCursos">
+    <table class="tabla-gestion" id="tablaCursosResultados">
         <thead>
             <tr>
                 <th>Nombre del Curso</th>
-                <th>Descripci√≥n</th>
-                <th>Fecha Inicio</th>
-                <th>Duraci√≥n</th>
-                <th>Acciones</th>
+                <th>Descripci&oacute;n</th>
+                <th style="width:120px; text-align:center;">Inicio</th>
+                <th style="width:80px; text-align:center;">Duraci&oacute;n</th>
+                <th class="acciones-col no-print" style="text-align: center !important; display: table-cell !important;">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <?php
-            $res = $conn->query("SELECT * FROM cursos ORDER BY id_curso DESC");
-            if ($res):
-                while($c = $res->fetch_assoc()):
-            ?>
-							<tr>
-					<td><?php echo htmlspecialchars($c['nombre_curso']); ?></td>
-					<td><?php echo htmlspecialchars($c['descripcion']); ?></td>
-					<td><?php echo $c['fecha_inicio']; ?></td>
-					<td><?php echo htmlspecialchars($c['duracion_horas']); ?></td>
-					<td>
-						<button class='btn-change' onclick="cargarVista('cursos_actualizar.php?id=<?php echo $c['id_curso']; ?>')">EDITAR</button>
-
-						<button class='btn-danger' onclick="eliminarFila(<?php echo $c['id_curso']; ?>, 'curso')">ELIMINAR</button>
-
-						<button class='btn-success' style="margin-left:5px;" onclick="cargarVista('cursos_ver.php?id=<?php echo $c['id_curso']; ?>')">
-							 Alumnos
-						</button>
-					</td>
-				</tr>
-            <?php 
-                endwhile; 
-            endif;
-            ?>
+            <tr><td colspan="5" style="text-align:center;">Cargando cursos...</td></tr>
         </tbody>
     </table>
-
-    <div id="paginacionCursos" class="paginacion-container"></div>
 </div>
 
 <script>
-    // Variables ESPEC√çFICAS para Cursos (evita conflicto con Usuarios)
-    let paginaActualCursos = 1;
-    let filasPorPaginaCursos = 10; 
+// Iniciar carga
+setTimeout(() => { buscarCursos(1); }, 100);
 
-    // Inicializar
-    setTimeout(actualizarPaginacionCursos, 100);
+function buscarCursos(pagina = 1) {
+    const criterio = document.getElementById('criterioCurso').value;
+    const termino = document.getElementById('terminoCurso').value;
+    const limite = document.getElementById('limiteCursos').value;
 
-    function cambiarCantidadCursos() {
-        const selector = document.getElementById('selectorCantidadCursos');
-        filasPorPaginaCursos = parseInt(selector.value);
-        paginaActualCursos = 1; 
-        actualizarPaginacionCursos();
+    const d = new FormData();
+    d.append('tipo', 'cursos_avanzado');
+    d.append('criterio', criterio);
+    d.append('termino', termino);
+    d.append('pagina', pagina);
+    d.append('limite', limite);
+
+    fetch('server/busqueda_general.php', { method: 'POST', body: d })
+    .then(r => r.text())
+    .then(html => {
+        document.querySelector('#tablaCursosResultados tbody').innerHTML = html;
+    })
+    .catch(err => console.error("Error cargando cursos: " + err));
+}
+
+	
+	function verAlumnosCurso(id) {
+    // Guardamos el ID temporalmente para que la vista lo lea
+    localStorage.setItem('curso_actual_id', id);
+    // Cargamos la vista limpia (sin el ?id= que da error 404)
+    cargarVista('cursos_alumnos.php');
+}
+	
+	// FunciÛn para abrir la gestiÛn de alumnos pasando el ID
+function cargarAlumnos(idCurso) {
+    // Verificamos que el ID no sea undefined o 0
+    if (!idCurso) {
+        alert("Error: ID de curso no identificado");
+        return;
     }
 
-    function actualizarPaginacionCursos() {
-        const tabla = document.getElementById('tablaCursos');
-        if(!tabla) return; 
-
-        const cuerpo = tabla.querySelector('tbody');
-        const filas = Array.from(cuerpo.querySelectorAll('tr'));
-        const contenedorBotones = document.getElementById('paginacionCursos');
-        const info = document.getElementById('infoRegistrosCursos');
-        const totalFilas = filas.length;
-
-        let limite = (filasPorPaginaCursos === -1) ? totalFilas : filasPorPaginaCursos;
-        let totalPaginas = Math.ceil(totalFilas / limite);
-
-        // 1. Mostrar/Ocultar
-        filas.forEach((fila, index) => {
-            fila.style.display = 'none';
-            let inicio = (paginaActualCursos - 1) * limite;
-            let fin = inicio + limite;
-            if (index >= inicio && index < fin) {
-                fila.style.display = '';
+    // Ruta relativa: Como est·s en index.php, la carpeta views est· ahÌ mismo.
+    fetch("views/cursos_alumnos.php?id=" + idCurso)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No se encontrÛ el archivo");
             }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById("main-content").innerHTML = html;
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Error al cargar la vista de alumnos. Revisa la consola.");
         });
-
-        // 2. Botones
-        contenedorBotones.innerHTML = '';
-        
-        // Prev
-        if (totalPaginas > 1) {
-            let btnPrev = document.createElement('button');
-            btnPrev.innerText = '¬´';
-            btnPrev.className = 'paginacion-btn';
-            btnPrev.onclick = () => { if(paginaActualCursos > 1) { paginaActualCursos--; actualizarPaginacionCursos(); }};
-            if(paginaActualCursos === 1) btnPrev.disabled = true;
-            contenedorBotones.appendChild(btnPrev);
-        }
-
-        // N√∫meros
-        for (let i = 1; i <= totalPaginas; i++) {
-            let btn = document.createElement('button');
-            btn.innerText = i;
-            btn.className = 'paginacion-btn ' + (i === paginaActualCursos ? 'active' : '');
-            btn.onclick = () => {
-                paginaActualCursos = i;
-                actualizarPaginacionCursos();
-            };
-            contenedorBotones.appendChild(btn);
-        }
-
-        // Next
-        if (totalPaginas > 1) {
-            let btnNext = document.createElement('button');
-            btnNext.innerText = '¬ª';
-            btnNext.className = 'paginacion-btn';
-            btnNext.onclick = () => { if(paginaActualCursos < totalPaginas) { paginaActualCursos++; actualizarPaginacionCursos(); }};
-            if(paginaActualCursos === totalPaginas) btnNext.disabled = true;
-            contenedorBotones.appendChild(btnNext);
-        }
-
-        
-    }
+}
 </script>

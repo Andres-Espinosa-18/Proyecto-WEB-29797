@@ -1,8 +1,11 @@
 function cargarVista(pagina) {
     if (!pagina || pagina === '#' || pagina.trim() === "") return;
 
+    // Actualizar URL del navegador visualmente (opcional, ayuda a la navegación)
+    // window.history.pushState({path: pagina}, '', '#' + pagina);
+
     const contenido = document.getElementById('main-content');
-    contenido.innerHTML = "<p>Cargando sección...</p>";
+    contenido.innerHTML = "<div class='loader-placeholder'><p>Cargando...</p></div>";
 
     fetch('views/' + pagina)
         .then(response => {
@@ -10,11 +13,9 @@ function cargarVista(pagina) {
             return response.text();
         })
         .then(html => {
-            // 1. Inyectamos el HTML
             contenido.innerHTML = html;
 
-            // 2. BUSCAMOS Y EJECUTAMOS SCRIPTS MANUALMENTE
-            // Esto es lo que permite que el botón "Guardar" funcione
+            // Re-ejecutar scripts
             const scripts = contenido.querySelectorAll("script");
             scripts.forEach(script => {
                 const nuevoScript = document.createElement("script");
@@ -24,28 +25,27 @@ function cargarVista(pagina) {
                     nuevoScript.textContent = script.textContent;
                 }
                 document.body.appendChild(nuevoScript);
-                // Limpiamos el DOM para no llenar de scripts repetidos
                 document.body.removeChild(nuevoScript);
             });
+
+            // --- CORRECCIÓN AQUÍ ---
+            // Se debe pasar la variable 'pagina', no 'url'
+            if(window.activarMenu) {
+                window.activarMenu(pagina);
+            }
         })
         .catch(err => {
             console.error(err);
-            contenido.innerHTML = `<div class="alert-danger">
+            contenido.innerHTML = `<div class="alert alert-danger">
                 <h3>Error 404</h3>
                 <p>No se pudo cargar la vista <b>${pagina}</b>.</p>
             </div>`;
         });
-	
-	if(window.activarMenu) {
-        window.activarMenu(url);
-    }
 }
 
-
+// Manejo de clics en el menú
 document.addEventListener('click', e => {
-    // Buscamos si el clic fue en un enlace o dentro de un enlace con la clase nav-link
     const link = e.target.closest('.nav-link');
-    
     if (link) {
         e.preventDefault();
         const vista = link.getAttribute('data-view');
@@ -54,7 +54,6 @@ document.addEventListener('click', e => {
         }
     }
 });
-
 function filtrarTabla() {
     // 1. Obtener el texto de búsqueda
     const input = document.getElementById("busqueda");

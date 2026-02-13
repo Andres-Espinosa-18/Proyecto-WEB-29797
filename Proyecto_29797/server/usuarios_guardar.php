@@ -3,49 +3,52 @@ require_once 'db.php';
 require_once 'funciones_auditoria.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nombre = trim($_POST['nombre_real']);
+    $nom = trim($_POST['nombre']);
+    $ape = trim($_POST['apellido']);
+    $ced = trim($_POST['cedula']);
+    $fec = $_POST['fecha_nacimiento'];
     $user = trim($_POST['username']);
     $pass = $_POST['password'];
-	$id_rol = intval($_POST['id_rol'] ?? 0);
-    $estado = 1;
-	$fecha = trim($_POST['fecha']);
-	$cedula = trim($_POST['cedula']);	
-	$email = trim($_POST['email']);
-	$direccion = trim($_POST['direccion']);
+    $rol = intval($_POST['id_rol']);
 
-    if (!empty($nombre) && !empty($user) && !empty($pass) && $id_rol >= 0) {
+    // Validar edad server-side
+    $edad = (new DateTime())->diff(new DateTime($fec))->y;
+    if($edad < 18) { die("Error: Debe ser mayor de 18 años."); }
+
+    // Validar duplicados (Opcional pero recomendado)
+    $check = $conn->query("SELECT id_usuario FROM usuarios WHERE username = '$user' OR cedula = '$ced'");
+    if ($check->num_rows > 0) {
+        die("Error: El usuario o la cédula ya están registrados.");
+    }
+
+    $conn->begin_transaction();
+    try {
+        $hash = password_hash($pass, PASSWORD_BCRYPT);
         
-        // Iniciar transacción para asegurar que se creen ambas cosas o ninguna
-        $conn->begin_transaction();
+        // Insert con nombre y apellido
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, apellido, cedula, fecha_nacimiento, username, password, estado) VALUES (?, ?, ?, ?, ?, ?, 1)");
+        $stmt->bind_param("ssssss", $nom, $ape, $ced, $fec, $user, $hash);
+        
+        if ($stmt->execute()) {
+            $uid = $conn->insert_id;
 
-        try {
-            // 1. Encriptar contraseña
-            $pass_hash = password_hash($pass, PASSWORD_BCRYPT);
-
-            // 2. Insertar Usuario
-            $stmt = $conn->prepare("INSERT INTO usuarios (nombre_real,fecha_nacimiento, cedula, email, direccion ,username, password, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssi", $nombre, $fecha, $cedula, $email, $direccion, $user, $pass_hash, $estado);
-            $stmt->execute();
+            // Insertar Rol
+            $conn->query("INSERT INTO usuario_roles (id_usuario, id_rol) VALUES ($uid, $rol)");
             
-            $new_user_id = $conn->insert_id;
-
-            // 3. Insertar el Rol asignado
-            $stmt_rol = $conn->prepare("INSERT INTO usuario_roles (id_usuario, id_rol) VALUES (?, ?)");
-            $stmt_rol->bind_param("ii", $new_user_id, $id_rol);
-            $stmt_rol->execute();
-
-            // 4. Auditoría
-            registrarEvento($conn, "Creó al usuario: $user y le asignó el Rol ID: $id_rol");
+            // Registrar en auditoría
+            if(function_exists('registrarEvento')) {
+                registrarEvento($conn, "Creó usuario: $user");
+            }
 
             $conn->commit();
-            echo "Usuario creado exitosamente con su rol correspondiente.";
-
-        } catch (Exception $e) {
-            $conn->rollback();
-            echo "Error al crear: " . $e->getMessage();
+            echo "Usuario guardado.";
+        } else {
+            throw new Exception($stmt->error);
         }
-    } else {
-        echo "Error: Todos los campos son obligatorios.";
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo "Error al guardar: " . $e->getMessage();
     }
 }
 ?>
